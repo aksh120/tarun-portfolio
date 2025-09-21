@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaAI Analytics - Clean Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #5B21B6;
+            --primary-light: #7C3AED;
+            --primary-dark: #4C1D95;
+            --success: #059669;
+            --success-light: #10B981;
+            --danger: #DC2626;
+            --warning: #F59E0B;
+            --bg-dark: #111827;
+            --bg-card: #1F2937;
+            --text-primary: #F9FAFB;
+            --text-secondary: #9CA3AF;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(180deg, #0F172A 0%, #111827 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: var(--bg-card);
+            padding: 0.25rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.75rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-light), var(--success-light));
+        }
+
+        .kpi-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .kpi-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(124, 58, 237, 0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .kpi-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .kpi-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+        }
+
+        .kpi-change.positive {
+            background: rgba(5, 150, 105, 0.15);
+            color: var(--success-light);
+        }
+
+        .kpi-change.negative {
+            background: rgba(220, 38, 38, 0.15);
+            color: var(--danger);
+        }
+
+        .chart-grid {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.75rem;
+            border: 1px solid var(--border);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .chart-card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .chart-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .chart-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+
+        .table-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(124, 58, 237, 0.08);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        td {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        tr:hover {
+            background: rgba(124, 58, 237, 0.03);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: rgba(5, 150, 105, 0.15);
+            color: var(--success-light);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-light), var(--success-light));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .alert-grid {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .alert-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border-left: 4px solid;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .alert-card:hover {
+            transform: translateX(4px);
+        }
+
+        .alert-card.alert-danger {
+            border-left-color: var(--danger);
+        }
+
+        .alert-card.alert-success {
+            border-left-color: var(--success);
+        }
+
+        .alert-card.alert-warning {
+            border-left-color: var(--warning);
+        }
+
+        .alert-icon {
+            font-size: 1.25rem;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+
+        .alert-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .nav-tabs {
+                width: 100%;
+                justify-content: start;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 250px;
+            }
+
+            table {
+                font-size: 0.875rem;
+            }
+
+            th, td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-light);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">AI</div>
+                <span>PharmaAI Analytics</span>
+            </div>
+            
+            <nav class="nav-tabs">
+                <button class="nav-tab active" onclick="switchTab(event, 'overview')">Overview</button>
+                <button class="nav-tab" onclick="switchTab(event, 'demand')">Demand</button>
+                <button class="nav-tab" onclick="switchTab(event, 'supply')">Supply Chain</button>
+                <button class="nav-tab" onclick="switchTab(event, 'performance')">Performance</button>
+                <button class="nav-tab" onclick="switchTab(event, 'alerts')">Alerts</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">📊</div>
+                        <div class="kpi-label">Records Analyzed</div>
+                    </div>
+                    <div class="kpi-value" data-value="10.2" data-suffix="M+">10.2M+</div>
+                    <div class="kpi-change positive">↑ 15% this quarter</div>
+                </div>
+
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">♻️</div>
+                        <div class="kpi-label">Waste Reduction</div>
+                    </div>
+                    <div class="kpi-value" data-value="25" data-suffix="%">25%</div>
+                    <div class="kpi-change positive">↑ 5% improved</div>
+                </div>
+
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">🌍</div>
+                        <div class="kpi-label">Active Markets</div>
+                    </div>
+                    <div class="kpi-value" data-value="127" data-suffix="">127</div>
+                    <div class="kpi-change positive">↑ 27 new markets</div>
+                </div>
+
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">💰</div>
+                        <div class="kpi-label">Annual Savings</div>
+                    </div>
+                    <div class="kpi-value" data-value="12" data-prefix="$" data-suffix="M">$12M</div>
+                    <div class="kpi-change positive">↑ $3M increase</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="chart-grid chart-grid-2">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Revenue Trend</h3>
+                        <p class="chart-subtitle">Monthly performance (in millions)</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Market Distribution</h3>
+                        <p class="chart-subtitle">Revenue by region</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="marketChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h3 class="table-title">Top Products Performance</h3>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Region</th>
+                                <th>Units Sold</th>
+                                <th>Accuracy</th>
+                                <th>Revenue</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Cardio-X Pro</strong></td>
+                                <td>North America</td>
+                                <td>245,000</td>
+                                <td>96.5%</td>
+                                <td>$2.4M</td>
+                                <td><span class="badge badge-success">Optimal</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>NeuroShield</strong></td>
+                                <td>Europe</td>
+                                <td>189,000</td>
+                                <td>94.8%</td>
+                                <td>$1.8M</td>
+                                <td><span class="badge badge-success">Optimal</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>ImmunoBoost</strong></td>
+                                <td>Asia Pacific</td>
+                                <td>312,000</td>
+                                <td>95.2%</td>
+                                <td>$3.1M</td>
+                                <td><span class="badge badge-warning">High Demand</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>RespiCare</strong></td>
+                                <td>Latin America</td>
+                                <td>156,000</td>
+                                <td>93.7%</td>
+                                <td>$1.5M</td>
+                                <td><span class="badge badge-success">Optimal</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demand Tab -->
+        <div id="demand" class="tab-content">
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">🎯</div>
+                        <div class="kpi-label">Forecast Accuracy</div>
+                    </div>
+                    <div class="kpi-value" data-value="95.2" data-suffix="%">95.2%</div>
+                    <div class="kpi-change positive">↑ 2.3% better</div>
+                </div>
+
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">📈</div>
+                        <div class="kpi-label">Demand Growth</div>
+                    </div>
+                    <div class="kpi-value" data-value="18.5" data-suffix="%">18.5%</div>
+                    <div class="kpi-change positive">↑ 4.2% YoY</div>
+                </div>
+
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">⚡</div>
+                        <div class="kpi-label">Prediction Speed</div>
+                    </div>
+                    <div class="kpi-value" data-value="1.2" data-suffix="s">1.2s</div>
+                    <div class="kpi-change positive">↓ 0.3s faster</div>
+                </div>
+
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">🔄</div>
+                        <div class="kpi-label">Daily Predictions</div>
+                    </div>
+                    <div class="kpi-value" data-value="42" data-suffix="K">42K</div>
+                    <div class="kpi-change positive">↑ 8K increase</div>
+                </div>
+            </div>
+
+            <!-- Forecast Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">AI Demand Forecast vs Actual</h3>
+                    <p class="chart-subtitle">12-month comparison with 95% confidence interval</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="forecastChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Pattern Charts -->
+            <div class="chart-grid chart-grid-2">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Seasonal Patterns</h3>
+                        <p class="chart-subtitle">Demand variation by quarter</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="seasonalChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Product Categories</h3>
+                        <p class="chart-subtitle">Performance by category</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Supply Chain Tab -->
+        <div id="supply" class="tab-content">
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">🚚</div>
+                        <div class="kpi-label">On-Time Delivery</div>
+                    </div>
+                    <div class="kpi-value" data-value="98.5" data-suffix="%">98.5%</div>
+                    <div class="kpi-change positive">↑ 1.2% better</div>
+                </div>
+
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">📦</div>
+                        <div class="kpi-label">Inventory Turnover</div>
+                    </div>
+                    <div class="kpi-value" data-value="12.3" data-suffix="x">12.3x</div>
+                    <div class="kpi-change positive">↑ 2.1x faster</div>
+                </div>
+
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">⏱️</div>
+                        <div class="kpi-label">Lead Time</div>
+                    </div>
+                    <div class="kpi-value" data-value="4.2" data-suffix=" days">4.2 days</div>
+                    <div class="kpi-change positive">↓ 0.8 days</div>
+                </div>
+
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">📉</div>
+                        <div class="kpi-label">Stockout Rate</div>
+                    </div>
+                    <div class="kpi-value" data-value="0.8" data-suffix="%">0.8%</div>
+                    <div class="kpi-change positive">↓ 0.4% lower</div>
+                </div>
+            </div>
+
+            <!-- Supply Chain Charts -->
+            <div class="chart-grid chart-grid-2">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Inventory Levels</h3>
+                        <p class="chart-subtitle">Current stock across facilities</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="inventoryChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Distribution Network</h3>
+                        <p class="chart-subtitle">Efficiency by region</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Facilities Table -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h3 class="table-title">Distribution Centers</h3>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Location</th>
+                                <th>Capacity</th>
+                                <th>Utilization</th>
+                                <th>Efficiency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>New York, USA</strong></td>
+                                <td>500K units</td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 85%"></div>
+                                    </div>
+                                </td>
+                                <td>92%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Frankfurt, Germany</strong></td>
+                                <td>450K units</td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 78%"></div>
+                                    </div>
+                                </td>
+                                <td>89%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Singapore</strong></td>
+                                <td>380K units</td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 92%"></div>
+                                    </div>
+                                </td>
+                                <td>95%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>São Paulo, Brazil</strong></td>
+                                <td>320K units</td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 68%"></div>
+                                    </div>
+                                </td>
+                                <td>86%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Tab -->
+        <div id="performance" class="tab-content">
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">🎯</div>
+                        <div class="kpi-label">Overall Score</div>
+                    </div>
+                    <div class="kpi-value" data-value="96.8" data-suffix="">96.8</div>
+                    <div class="kpi-change positive">↑ 4.2 points</div>
+                </div>
+
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">📈</div>
+                        <div class="kpi-label">ROI</div>
+                    </div>
+                    <div class="kpi-value" data-value="324" data-suffix="%">324%</div>
+                    <div class="kpi-change positive">↑ 82% increase</div>
+                </div>
+
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">⚡</div>
+                        <div class="kpi-label">Efficiency</div>
+                    </div>
+                    <div class="kpi-value" data-value="94.3" data-suffix="%">94.3%</div>
+                    <div class="kpi-change positive">↑ 3.2% better</div>
+                </div>
+
+                <div class="kpi-card" onclick="animateValue(this)">
+                    <div class="kpi-header">
+                        <div class="kpi-icon">✅</div>
+                        <div class="kpi-label">Success Rate</div>
+                    </div>
+                    <div class="kpi-value" data-value="99.2" data-suffix="%">99.2%</div>
+                    <div class="kpi-change positive">↑ 1.8% improved</div>
+                </div>
+            </div>
+
+            <!-- Performance Charts -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Performance Metrics Over Time</h3>
+                    <p class="chart-subtitle">Key indicators trending upward</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-grid chart-grid-2">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Cost Savings Breakdown</h3>
+                        <p class="chart-subtitle">By optimization category</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="savingsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Capacity Utilization</h3>
+                        <p class="chart-subtitle">Plant efficiency metrics</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="capacityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts Tab -->
+        <div id="alerts" class="tab-content">
+            <h2 style="margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 600;">AI-Generated Insights & Alerts</h2>
+            
+            <div class="alert-grid">
+                <div class="alert-card alert-danger">
+                    <div class="alert-icon">⚠️</div>
+                    <div class="alert-content">
+                        <div class="alert-title">High Demand Alert - Asia Pacific</div>
+                        <div class="alert-text">Unexpected 35% surge in demand for CardioX Pro in Singapore. Recommend increasing production by 25,000 units immediately.</div>
+                    </div>
+                </div>
+
+                <div class="alert-card alert-success">
+                    <div class="alert-icon">✅</div>
+                    <div class="alert-content">
+                        <div class="alert-title">Optimization Success - North America</div>
+                        <div class="alert-text">Supply chain optimization reduced delivery times by 1.2 days and saved $450K this month.</div>
+                    </div>
+                </div>
+
+                <div class="alert-card alert-warning">
+                    <div class="alert-icon">📈</div>
+                    <div class="alert-content">
+                        <div class="alert-title">Opportunity Identified - Europe</div>
+                        <div class="alert-text">AI predicts 28% growth potential in Germany for NeuroShield. Consider targeted marketing campaign.</div>
+                    </div>
+                </div>
+
+                <div class="alert-card alert-warning">
+                    <div class="alert-icon">🔄</div>
+                    <div class="alert-content">
+                        <div class="alert-title">Seasonal Pattern Detected</div>
+                        <div class="alert-text">Historical data shows 40% increase in RespiCare demand next month. Adjust production schedules.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alert Analytics -->
+            <div class="chart-grid chart-grid-2">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Alert Trends</h3>
+                        <p class="chart-subtitle">Last 30 days activity</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="alertChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Insight Accuracy</h3>
+                        <p class="chart-subtitle">AI prediction performance</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="insightChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chartInstances = {};
+
+        function switchTab(event, tabName) {
+            if (event) {
+                event.preventDefault();
+            }
+
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            const targetTab = document.getElementById(tabName);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+
+            setTimeout(() => {
+                initializeTabCharts(tabName);
+            }, 100);
+        }
+
+        function animateValue(card) {
+            const valueElement = card.querySelector('.kpi-value');
+            if (!valueElement) return;
+
+            const endValue = parseFloat(valueElement.dataset.value) || 0;
+            const prefix = valueElement.dataset.prefix || '';
+            const suffix = valueElement.dataset.suffix || '';
+            const duration = 1000;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const currentValue = progress * endValue;
+                
+                let displayValue;
+                if (endValue % 1 !== 0) {
+                    displayValue = currentValue.toFixed(1);
+                } else {
+                    displayValue = Math.floor(currentValue);
+                }
+                
+                valueElement.textContent = prefix + displayValue + suffix;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        function createChart(canvasId, config) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return null;
+
+            if (chartInstances[canvasId]) {
+                chartInstances[canvasId].destroy();
+            }
+
+            const ctx = canvas.getContext('2d');
+            chartInstances[canvasId] = new Chart(ctx, config);
+            return chartInstances[canvasId];
+        }
+
+        function initializeTabCharts(tabName) {
+            switch(tabName) {
+                case 'overview':
+                    initializeOverviewCharts();
+                    break;
+                case 'demand':
+                    initializeDemandCharts();
+                    break;
+                case 'supply':
+                    initializeSupplyCharts();
+                    break;
+                case 'performance':
+                    initializePerformanceCharts();
+                    break;
+                case 'alerts':
+                    initializeAlertCharts();
+                    break;
+            }
+        }
+
+        Chart.defaults.color = '#9CA3AF';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+        Chart.defaults.font.family = 'Inter, -apple-system, BlinkMacSystemFont, sans-serif';
+        Chart.defaults.responsive = true;
+        Chart.defaults.maintainAspectRatio = false;
+
+        function initializeOverviewCharts() {
+            createChart('revenueChart', {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [8.2, 8.5, 9.1, 9.8, 10.2, 11.1, 11.8, 12.3, 12.9, 13.5, 14.2, 15.1],
+                        borderColor: '#7C3AED',
+                        backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Revenue: $' + context.parsed.y + 'M';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value + 'M';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            createChart('marketChart', {
+                type: 'doughnut',
+                data: {
+                    labels: ['North America', 'Europe', 'Asia Pacific', 'Latin America', 'Others'],
+                    datasets: [{
+                        data: [35, 28, 22, 10, 5],
+                        backgroundColor: [
+                            '#7C3AED',
+                            '#10B981',
+                            '#F59E0B',
+                            '#06B6D4',
+                            '#6B7280'
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                padding: 12,
+                                font: { size: 12 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initializeDemandCharts() {
+            createChart('forecastChart', {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'AI Forecast',
+                        data: [320, 342, 365, 380, 395, 420, 445, 460, 475, 490, 510, 525],
+                        borderColor: '#7C3AED',
+                        backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                        tension: 0.4,
+                        borderWidth: 3
+                    }, {
+                        label: 'Actual Demand',
+                        data: [315, 338, 370, 378, 392, 418, 448, 455, 472, 495, null, null],
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.parsed.y !== null) {
+                                        return context.dataset.label + ': ' + context.parsed.y + 'K units';
+                                    }
+                                    return '';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + 'K';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            createChart('seasonalChart', {
+                type: 'bar',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                    datasets: [{
+                        label: 'Demand Variation',
+                        data: [85, 95, 110, 120],
+                        backgroundColor: ['#5B21B6', '#7C3AED', '#8B5CF6', '#A78BFA'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            createChart('categoryChart', {
+                type: 'radar',
+                data: {
+                    labels: ['Cardiology', 'Neurology', 'Immunology', 'Respiratory', 'Oncology'],
+                    datasets: [{
+                        label: 'Performance',
+                        data: [96, 94, 95, 93, 91],
+                        borderColor: '#7C3AED',
+                        backgroundColor: 'rgba(124, 58, 237, 0.2)',
+                        pointBackgroundColor: '#7C3AED',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#7C3AED'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            beginAtZero: false,
+                            min: 85,
+                            max: 100,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            angleLines: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initializeSupplyCharts() {
+            createChart('inventoryChart', {
+                type: 'bar',
+                data: {
+                    labels: ['New York', 'Frankfurt', 'Singapore', 'São Paulo'],
+                    datasets: [{
+                        label: 'Current Stock',
+                        data: [425, 351, 350, 218],
+                        backgroundColor: '#10B981',
+                        borderRadius: 8
+                    }, {
+                        label: 'Capacity',
+                        data: [500, 450, 380, 320],
+                        backgroundColor: 'rgba(107, 114, 128, 0.3)',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + 'K';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            createChart('distributionChart', {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'North America',
+                        data: [92, 94, 93, 95],
+                        borderColor: '#7C3AED',
+                        tension: 0.3
+                    }, {
+                        label: 'Europe',
+                        data: [88, 89, 91, 89],
+                        borderColor: '#10B981',
+                        tension: 0.3
+                    }, {
+                        label: 'Asia Pacific',
+                        data: [95, 93, 94, 95],
+                        borderColor: '#F59E0B',
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            min: 85,
+                            max: 100,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initializePerformanceCharts() {
+            createChart('performanceChart', {
+                type: 'line',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1 2025'],
+                    datasets: [{
+                        label: 'Efficiency',
+                        data: [85, 88, 91, 93, 94.3],
+                        borderColor: '#7C3AED',
+                        backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }, {
+                        label: 'Accuracy',
+                        data: [90, 92, 93.5, 94.8, 95.2],
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }, {
+                        label: 'Success Rate',
+                        data: [95, 96.5, 97.8, 98.5, 99.2],
+                        borderColor: '#F59E0B',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 80,
+                            max: 100,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            createChart('savingsChart', {
+                type: 'pie',
+                data: {
+                    labels: ['Production', 'Inventory', 'Distribution', 'Waste', 'Other'],
+                    datasets: [{
+                        data: [4.2, 3.1, 2.8, 1.5, 0.4],
+                        backgroundColor: [
+                            '#7C3AED',
+                            '#10B981',
+                            '#F59E0B',
+                            '#EF4444',
+                            '#6B7280'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': $' + context.parsed + 'M';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            createChart('capacityChart', {
+                type: 'bar',
+                data: {
+                    labels: ['Plant A', 'Plant B', 'Plant C', 'Plant D'],
+                    datasets: [{
+                        label: 'Utilization %',
+                        data: [88, 82, 91, 79],
+                        backgroundColor: function(context) {
+                            const value = context.parsed.y;
+                            if (value > 90) return '#EF4444';
+                            if (value > 80) return '#F59E0B';
+                            return '#10B981';
+                        },
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            max: 100,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initializeAlertCharts() {
+            createChart('alertChart', {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 30}, (_, i) => 'Day ' + (i + 1)),
+                    datasets: [{
+                        label: 'Alerts',
+                        data: Array.from({length: 30}, () => Math.floor(Math.random() * 10) + 5),
+                        borderColor: '#EF4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                        },
+                        x: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            createChart('insightChart', {
+                type: 'doughnut',
+                data: {
+                    labels: ['Accurate', 'Partially Accurate', 'Needs Review'],
+                    datasets: [{
+                        data: [82, 15, 3],
+                        backgroundColor: [
+                            '#10B981',
+                            '#F59E0B',
+                            '#EF4444'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            initializeOverviewCharts();
+        });
+
+        window.addEventListener('resize', function() {
+            Object.values(chartInstances).forEach(chart => {
+                if (chart) {
+                    chart.resize();
+                }
+            });
+        });
+
+        window.addEventListener('beforeunload', function() {
+            Object.values(chartInstances).forEach(chart => {
+                if (chart) {
+                    chart.destroy();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
