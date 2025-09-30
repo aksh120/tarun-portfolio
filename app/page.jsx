@@ -230,7 +230,7 @@ export default function HomePage() {
               desc: 'Agentic workflows for finance automation with RAG, orchestration, and evaluation. Built to streamline financial analysis and reporting.',
               stack: ['Next.js', 'Python', 'RAG', 'Agents', 'OpenAI'],
               impact: 'Automation Platform Prototype',
-              link: 'https://finance-agentic-ai.vercel.app/',
+              link: '/projects/agentic-ai',
             },
           ].map((p) => (
             <Reveal key={p.title}>
