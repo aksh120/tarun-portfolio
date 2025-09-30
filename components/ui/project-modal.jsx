@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ArrowLeft } from 'lucide-react';
+import { X, ArrowLeft, Github, ExternalLink } from 'lucide-react';
 
 export default function ProjectModal({ open, onClose, data }) {
   useEffect(() => {
@@ -77,6 +77,34 @@ export default function ProjectModal({ open, onClose, data }) {
             <div className="p-5 md:p-6">
               <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">{data.title}</h2>
               <p className="mt-1 text-slate-600 dark:text-gray-300">{data.subtitle}</p>
+
+              {/* Action buttons */}
+              {(data.links?.github || data.links?.website) && (
+                <div className="mt-4 flex flex-wrap gap-3">
+                  {data.links?.github && (
+                    <a
+                      href={data.links.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full border border-slate-200/60 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 dark:border-white/10 dark:bg-white/10 dark:text-gray-200"
+                    >
+                      <Github size={16} />
+                      <span>View GitHub</span>
+                    </a>
+                  )}
+                  {data.links?.website && (
+                    <a
+                      href={data.links.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-teal-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:brightness-110"
+                    >
+                      <ExternalLink size={16} />
+                      <span>Visit Website</span>
+                    </a>
+                  )}
+                </div>
+              )}
 
               <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-5">
                 {data.metrics?.map((m) => (

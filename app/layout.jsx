@@ -5,8 +5,21 @@ import ThemeProvider from '@/components/theme-provider';
 import SplashProvider from '@/components/splash-provider';
 
 export const metadata = {
-  title: 'Tarun Asrani | Data Maverick',
+  title: {
+    default: 'Tarun Asrani | Data Maverick',
+    template: '%s | Tarun Asrani',
+  },
   description: 'Portfolio of Tarun Asrani – Data Analyst & Dashboard Storyteller',
+  openGraph: {
+    title: 'Tarun Asrani | Data Maverick',
+    description: 'Portfolio of Tarun Asrani – Data Analyst & Dashboard Storyteller',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Tarun Asrani | Data Maverick',
+    description: 'Portfolio of Tarun Asrani – Data Analyst & Dashboard Storyteller',
+  },
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 };
 

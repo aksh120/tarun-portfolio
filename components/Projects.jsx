@@ -102,6 +102,38 @@ export default function Dashboards() {
           ],
         },
       },
+      {
+        key: 'agentic-ai',
+        title: 'Multi-Agent AI Finance Transformation Platform',
+        desc: 'Agentic workflows for finance automation with RAG, orchestration, and evaluation. Built to streamline financial analysis and reporting.',
+        tags: ['Next.js', 'Python', 'RAG', 'Agents', 'OpenAI'],
+        impact: 'Automation Platform Prototype',
+        modal: {
+          title: 'Multi-Agent AI Finance Transformation Platform',
+          subtitle: 'Agentic automation for financial analysis, reporting and insight generation.',
+          metrics: [
+            { value: '5+', label: 'Agents Orchestrated' },
+            { value: 'RAG', label: 'Retrieval Augmented' },
+            { value: 'Evals', label: 'Quality Checks' },
+            { value: 'Next.js', label: 'Web UI' },
+            { value: 'Python', label: 'Backend' },
+          ],
+          sections: [
+            {
+              title: 'Overview',
+              desc: 'A multi-agent system that composes retrieval, analysis, and report agents to automate finance workflows.',
+            },
+            {
+              title: 'Tech Stack',
+              desc: 'Next.js front-end with a Python agent backend integrating RAG and evaluation loops.',
+            },
+          ],
+          links: {
+            github: 'https://github.com/TarunAsrani/Multi-Agent-AI-Finance-Transformation-Platform',
+            website: 'https://finance-agentic-ai.vercel.app/',
+          },
+        },
+      },
     ],
     []
   );
@@ -165,6 +197,7 @@ export default function Dashboards() {
         subtitle: active.modal.subtitle,
         metrics: active.modal.metrics,
         sections: active.modal.sections,
+        links: active.modal.links,
       }} />
     </>
   );
