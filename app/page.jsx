@@ -225,6 +225,13 @@ export default function HomePage() {
               impact: '$12M Annual Cost Reduction',
               link: '/projects/ai-demand-forecasting',
             },
+            {
+              title: 'Multi-Agent AI Finance Transformation Platform',
+              desc: 'Agentic workflows for finance automation with RAG, orchestration, and evaluation. Built to streamline financial analysis and reporting.',
+              stack: ['Next.js', 'Python', 'RAG', 'Agents', 'OpenAI'],
+              impact: 'Automation Platform Prototype',
+              link: 'https://finance-agentic-ai.vercel.app/',
+            },
           ].map((p) => (
             <Reveal key={p.title}>
               <div className="group h-full">
@@ -254,10 +261,22 @@ export default function HomePage() {
                     )}
                     {p.link && (
                       <div className="mt-4">
-                        <Link href={p.link} className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-teal-500 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:brightness-110">
-                          Open Case Study
-                          <ArrowUpRight size={16} />
-                        </Link>
+                        {p.link.startsWith('http') ? (
+                          <a
+                            href={p.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-teal-500 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:brightness-110"
+                          >
+                            Visit Project
+                            <ArrowUpRight size={16} />
+                          </a>
+                        ) : (
+                          <Link href={p.link} className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-teal-500 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:brightness-110">
+                            Open Case Study
+                            <ArrowUpRight size={16} />
+                          </Link>
+                        )}
                       </div>
                     )}
                   </div>
