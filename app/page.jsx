@@ -232,6 +232,13 @@ export default function HomePage() {
               impact: 'Automation Platform Prototype',
               link: '/projects/agentic-ai',
             },
+            {
+              title: 'Smartphone Market Analysis',
+              desc: 'AI Demand Forecasting with RAG, orchestration, and evaluation. Built to streamline financial analysis and reporting.',
+              stack: ['Python', 'RAG', 'Agents', 'OpenAI'],
+              impact: 'Automation Platform Prototype',
+              link: '/projects/smartphone-market',
+            },
           ].map((p) => (
             <Reveal key={p.title}>
               <div className="group h-full">

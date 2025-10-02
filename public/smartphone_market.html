@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Smartphone Market Analysis</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f23;
+            color: #e8eaed;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 70%, rgba(168, 85, 247, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.1) 100%);
+            backdrop-filter: blur(20px);
+            padding: 70px 60px;
+            border-radius: 28px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);
+            text-align: center;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #3b82f6, #6366f1);
+            background-size: 200% 100%;
+            animation: shimmer 4s ease-in-out infinite;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.5; }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 30%, #a5b4fc 60%, #ddd6fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            filter: drop-shadow(0 0 30px rgba(99, 102, 241, 0.4));
+        }
+
+        .subtitle {
+            color: #9ca3af;
+            font-size: 1.15em;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.6;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle strong {
+            color: #c7d2fe;
+            font-weight: 600;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(168, 85, 247, 0.25));
+            color: #c7d2fe;
+            padding: 10px 24px;
+            border-radius: 24px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 20px;
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .header-badge:hover::before {
+            left: 100%;
+        }
+
+        .badge-icon {
+            width: 14px;
+            height: 14px;
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        nav {
+            background: linear-gradient(135deg, rgba(30, 30, 50, 0.9) 0%, rgba(25, 25, 45, 0.85) 100%);
+            backdrop-filter: blur(30px);
+            padding: 8px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.1);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 4px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #9ca3af;
+            padding: 14px 28px;
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            font-size: 0.95em;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+            display: block;
+            white-space: nowrap;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(168, 85, 247, 0.25));
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            transform: translateX(-50%);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        nav a:hover::before {
+            opacity: 1;
+        }
+
+        nav a:hover::after {
+            width: 80%;
+        }
+
+        nav a:hover {
+            color: #e8eaed;
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        nav a.active {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(168, 85, 247, 0.3));
+            color: #fff;
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        nav a.active::after {
+            width: 80%;
+        }
+
+        .section {
+            background: linear-gradient(135deg, rgba(30, 30, 50, 0.7) 0%, rgba(25, 25, 45, 0.6) 100%);
+            backdrop-filter: blur(20px);
+            padding: 45px;
+            border-radius: 24px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        h2 {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 35px;
+            font-size: 2.2em;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, transparent);
+            border-radius: 2px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 35px 30px;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.4);
+            border-color: #6366f1;
+        }
+
+        .stat-value {
+            font-size: 3em;
+            font-weight: 800;
+            margin: 15px 0;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.95em;
+            color: #9ca3af;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 35px 0;
+            background: rgba(20, 20, 35, 0.6);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin: 35px 0;
+        }
+
+        .insight-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(168, 85, 247, 0.08) 100%);
+            padding: 30px;
+            border-radius: 16px;
+            border-left: 4px solid #6366f1;
+            margin: 25px 0;
+            border-right: 1px solid rgba(99, 102, 241, 0.2);
+            border-top: 1px solid rgba(99, 102, 241, 0.2);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .insight-box:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25);
+        }
+
+        .insight-box h3 {
+            color: #a5b4fc;
+            margin-bottom: 18px;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .insight-box p {
+            color: #d1d5db;
+            margin: 12px 0;
+            line-height: 1.7;
+        }
+
+        .insight-box strong {
+            color: #c7d2fe;
+        }
+
+        .insight-box ul {
+            margin-left: 20px;
+            color: #d1d5db;
+        }
+
+        .insight-box li {
+            margin: 10px 0;
+            line-height: 1.7;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.15) 100%);
+            padding: 25px 30px;
+            border-radius: 16px;
+            margin: 25px 0;
+            border-left: 4px solid #6366f1;
+            color: #e8eaed;
+            line-height: 1.8;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .highlight::before {
+            content: '💡';
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 2em;
+            opacity: 0.3;
+        }
+
+        .highlight strong {
+            color: #a5b4fc;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 30px 0;
+            background: rgba(20, 20, 35, 0.6);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(99, 102, 241, 0.15);
+        }
+
+        th, td {
+            padding: 18px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+            color: #e8eaed;
+        }
+
+        th {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(168, 85, 247, 0.2) 100%);
+            color: #fff;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.05em;
+        }
+
+        tr {
+            transition: all 0.2s ease;
+        }
+
+        tr:hover {
+            background: rgba(99, 102, 241, 0.12);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .brand-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .brand-logo:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .logo-apple {
+            background: linear-gradient(135deg, #000, #333);
+            color: #fff;
+        }
+
+        .logo-google {
+            background: #fff;
+            color: #4285F4;
+            font-weight: 800;
+        }
+
+        .logo-realme {
+            background: linear-gradient(135deg, #FFD500, #FFC700);
+            color: #000;
+            font-weight: 800;
+        }
+
+        .logo-poco {
+            background: linear-gradient(135deg, #F8E71C, #FFD700);
+            color: #000;
+            font-weight: 800;
+        }
+
+        .logo-vivo {
+            background: linear-gradient(135deg, #0066FF, #0052CC);
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .logo-iqoo {
+            background: #000;
+            color: #FF0000;
+            border: 2px solid #FF0000;
+            font-weight: 800;
+        }
+
+        .logo-samsung {
+            background: linear-gradient(135deg, #1428A0, #0F1D6F);
+            color: #fff;
+        }
+
+        .key-findings {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #3b82f6 100%);
+            color: white;
+            padding: 45px;
+            border-radius: 20px;
+            margin: 35px 0;
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .key-findings::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .key-findings h3 {
+            margin-bottom: 25px;
+            font-size: 1.7em;
+            font-weight: 800;
+            position: relative;
+            z-index: 1;
+        }
+
+        .key-findings ul {
+            list-style-position: inside;
+            position: relative;
+            z-index: 1;
+        }
+
+        .key-findings li {
+            margin: 15px 0;
+            padding-left: 10px;
+            font-weight: 400;
+            line-height: 1.8;
+            font-size: 1.05em;
+        }
+
+        .emoji-icon {
+            display: inline-block;
+            font-size: 1.5em;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2em;
+            }
+
+            header {
+                padding: 50px 30px;
+            }
+
+            .subtitle {
+                font-size: 1em;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            nav a {
+                text-align: center;
+                padding: 16px 24px;
+            }
+            
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 30px 25px;
+            }
+
+            .stat-value {
+                font-size: 2.5em;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f0f23;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInNav {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        header {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        h1 {
+            animation: fadeInUp 0.6s ease-out 0.2s backwards;
+        }
+
+        .subtitle {
+            animation: fadeInUp 0.6s ease-out 0.3s backwards;
+        }
+
+        .header-badge {
+            animation: fadeInUp 0.6s ease-out 0.4s backwards;
+        }
+
+        .section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        nav {
+            animation: slideInNav 0.5s ease-out 0.2s backwards;
+        }
+
+        nav li {
+            animation: slideInNav 0.5s ease-out backwards;
+        }
+
+        nav li:nth-child(1) { animation-delay: 0.3s; }
+        nav li:nth-child(2) { animation-delay: 0.35s; }
+        nav li:nth-child(3) { animation-delay: 0.4s; }
+        nav li:nth-child(4) { animation-delay: 0.45s; }
+        nav li:nth-child(5) { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>Indian Smartphone Market Analysis</h1>
+                <p class="subtitle"><strong>MBA565</strong> Final Project: Comprehensive Market Intelligence & Consumer Insights</p>
+                <div class="header-badge">
+                    <svg class="badge-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                    Data-Driven Research
+                </div>
+            </div>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#overview" class="nav-link active">Overview</a></li>
+                <li><a href="#brands" class="nav-link">Brand Analysis</a></li>
+                <li><a href="#pricing" class="nav-link">Price Variation</a></li>
+                <li><a href="#ratings" class="nav-link">Ratings & Discounts</a></li>
+                <li><a href="#insights" class="nav-link">Key Insights</a></li>
+            </ul>
+        </nav>
+
+        <section id="overview" class="section">
+            <h2>Market Overview</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Market Rank</div>
+                    <div class="stat-value">#2</div>
+                    <div class="stat-label">Globally by Volume</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">CAGR</div>
+                    <div class="stat-value">14.6%</div>
+                    <div class="stat-label">FY2021-FY2025</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Chinese Brands</div>
+                    <div class="stat-value">72%</div>
+                    <div class="stat-label">Market Share</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Budget Segment</div>
+                    <div class="stat-value">80%</div>
+                    <div class="stat-label">Under ₹12,000</div>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <strong>Apple's Record Growth:</strong> 4 million units shipped in Q4 2024 - the largest quarterly shipment ever. Apple now commands 71% of the premium segment (₹48,000-₹64,000), up from previous year, while Samsung's share decreased.
+            </div>
+
+            <div class="two-column">
+                <div class="chart-container">
+                    <canvas id="marketShareChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="premiumMarketChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="brands" class="section">
+            <h2>Brand Comparison & Consumer Preferences</h2>
+
+            <div class="insight-box">
+                <h3>📊 Regression Model Insights</h3>
+                <p><strong>Model Performance:</strong> R² = 0.50 (explains 50% of variance in ratings)</p>
+                <p><strong>Key Finding:</strong> Brand has significantly more impact on ratings than price or discount percentage. Premium brands command higher ratings regardless of pricing strategies.</p>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="brandCoefficientsChart"></canvas>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Brand</th>
+                        <th>Impact Coefficient</th>
+                        <th>Average Rating</th>
+                        <th>Market Position</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="brand-cell">
+                                <div class="brand-logo logo-apple">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                                    </svg>
+                                </div>
+                                <span>Apple</span>
+                            </div>
+                        </td>
+                        <td>0.558</td>
+                        <td>⭐⭐⭐⭐⭐</td>
+                        <td>Premium Leader</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="brand-cell">
+                                <div class="brand-logo logo-google">G</div>
+                                <span>Google</span>
+                            </div>
+                        </td>
+                        <td>0.529</td>
+                        <td>⭐⭐⭐⭐⭐</td>
+                        <td>Premium</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="brand-cell">
+                                <div class="brand-logo logo-realme">R</div>
+                                <span>realme</span>
+                            </div>
+                        </td>
+                        <td>0.515</td>
+                        <td>⭐⭐⭐⭐</td>
+                        <td>Budget</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="brand-cell">
+                                <div class="brand-logo logo-poco">P</div>
+                                <span>POCO</span>
+                            </div>
+                        </td>
+                        <td>0.506</td>
+                        <td>⭐⭐⭐⭐</td>
+                        <td>Budget</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="brand-cell">
+                                <div class="brand-logo logo-vivo">V</div>
+                                <span>Vivo</span>
+                            </div>
+                        </td>
+                        <td>0.492</td>
+                        <td>⭐⭐⭐⭐</td>
+                        <td>Mid-tier</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="brand-cell">
+                                <div class="brand-logo logo-iqoo">iQ</div>
+                                <span>IQOO</span>
+                            </div>
+                        </td>
+                        <td>0.474</td>
+                        <td>⭐⭐⭐⭐</td>
+                        <td>Mid-tier</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="brand-cell">
+                                <div class="brand-logo logo-samsung">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M3 4h18v16H3V4zm16 14V6H5v12h14zM7 16h2v-2H7v2zm0-3h2v-2H7v2zm0-3h2V8H7v2zm3 6h2v-2h-2v2zm0-3h2v-2h-2v2zm0-3h2V8h-2v2zm3 6h2v-2h-2v2zm0-3h2v-2h-2v2zm0-3h2V8h-2v2zm3 6h2v-2h-2v2zm0-3h2v-2h-2v2zm0-3h2V8h-2v2z"/>
+                                    </svg>
+                                </div>
+                                <span>Samsung</span>
+                            </div>
+                        </td>
+                        <td>0.316</td>
+                        <td>⭐⭐⭐</td>
+                        <td>Mid-premium</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="highlight">
+                <strong>Generation Y & Z Insight:</strong> Brand name serves as a status symbol for younger consumers. Brand reputation outweighs price considerations in purchase decisions.
+            </div>
+        </section>
+
+        <section id="pricing" class="section">
+            <h2>Price Variation Analysis</h2>
+
+            <div class="key-findings">
+                <h3>🎯 Statistical Findings</h3>
+                <ul>
+                    <li>ANOVA confirms brand is a statistically significant predictor of price (p < 0.0001)</li>
+                    <li>Brand explains 53.5% of price variation (R² = 0.535)</li>
+                    <li>Clear market segmentation: Premium, Mid-tier, and Budget segments</li>
+                </ul>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="priceRangeChart"></canvas>
+            </div>
+
+            <div class="two-column">
+                <div class="chart-container">
+                    <canvas id="storageImpactChart"></canvas>
+                </div>
+                <div class="insight-box">
+                    <h3>💾 Storage Impact on Pricing</h3>
+                    <p><strong>Model Performance:</strong> R² = 0.6742 (67.42% variance explained)</p>
+                    <ul>
+                        <li><strong>1TB:</strong> +₹158,219 premium</li>
+                        <li><strong>512GB:</strong> +₹111,617 premium</li>
+                        <li><strong>256GB:</strong> +₹58,654 premium</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>Key Insight:</strong> Storage is the strongest determinant of smartphone price, while memory and camera features show inconsistent impact.</p>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Apple Avg Price</div>
+                    <div class="stat-value">₹81,986</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Samsung Avg Price</div>
+                    <div class="stat-value">₹35,000</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">realme Avg Price</div>
+                    <div class="stat-value">₹18,500</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Infinix Avg Price</div>
+                    <div class="stat-value">₹15,200</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ratings" class="section">
+            <h2>Price, Discounts & Consumer Ratings</h2>
+
+            <div class="insight-box">
+                <h3>📈 Price-Rating Correlation</h3>
+                <p><strong>Correlation:</strong> 0.46 (moderate positive)</p>
+                <p>Higher-priced phones generally receive higher ratings, but the relationship is not strongly linear. Brand reputation and features play larger roles than price alone.</p>
+            </div>
+
+            <div class="two-column">
+                <div class="chart-container">
+                    <canvas id="discountImpactChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="ratingComparisonChart"></canvas>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <strong>Discount Strategy Impact:</strong> Phones with discounts achieve 0.11 points higher ratings on average (4.30 vs 4.20). Discounted phones also show more consistent quality perception among consumers.
+            </div>
+
+            <div class="key-findings">
+                <h3>💡 Strategic Recommendations for Apple</h3>
+                <ul>
+                    <li>Maintain premium pricing strategy to reinforce brand positioning</li>
+                    <li>Apply selective discounts on iPhone 13 & 15 to attract price-sensitive consumers</li>
+                    <li>Leverage 71% premium segment dominance to expand market share</li>
+                    <li>Focus on storage variants (256GB+) for premium positioning</li>
+                    <li>Capitalize on brand reputation (highest rating coefficient: 0.558)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="insights" class="section">
+            <h2>Executive Summary & Key Takeaways</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Market Opportunity</div>
+                    <div class="stat-value">Massive</div>
+                    <div class="stat-label">Low penetration rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Growth Driver</div>
+                    <div class="stat-value">Budget</div>
+                    <div class="stat-label">80% under ₹12K</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Premium Winner</div>
+                    <div class="stat-value">Apple</div>
+                    <div class="stat-label">71% share</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Brand Matters</div>
+                    <div class="stat-value">Most</div>
+                    <div class="stat-label">Status symbol for Gen Y/Z</div>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <h3>🔑 Critical Success Factors</h3>
+                <p><strong>1. Market Segmentation:</strong> Three distinct segments (Premium, Mid-tier, Budget) with clear differentiation in pricing and features.</p>
+                <p><strong>2. Brand Equity:</strong> Brand has the highest impact on consumer ratings, surpassing price and discount considerations.</p>
+                <p><strong>3. Storage Premium:</strong> Consumers willing to pay significant premiums for increased storage (1TB commands ₹158K+ premium).</p>
+                <p><strong>4. Discount Effectiveness:</strong> Strategic discounting improves both ratings and perception consistency.</p>
+                <p><strong>5. Youth Market:</strong> Generation Y & Z view smartphones as status symbols, prioritizing brand over price.</p>
+            </div>
+
+            <div class="highlight">
+                <strong>Future Outlook:</strong> With India's smartphone penetration still relatively low and a projected 14.6% CAGR through 2025, the market presents substantial growth opportunities. Success will depend on understanding consumer price sensitivity in the mass market while maintaining premium positioning for aspirational segments.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        Chart.defaults.color = '#9ca3af';
+        Chart.defaults.borderColor = 'rgba(99, 102, 241, 0.15)';
+
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#d1d5db',
+                        font: {
+                            family: 'Inter',
+                            size: 12
+                        },
+                        padding: 15
+                    }
+                }
+            }
+        };
+
+        // Market Share Chart
+        new Chart(document.getElementById('marketShareChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Chinese Brands', 'Samsung', 'Apple', 'Others'],
+                datasets: [{
+                    data: [72, 12.3, 8.6, 7.1],
+                    backgroundColor: ['#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                ...chartOptions,
+                plugins: {
+                    ...chartOptions.plugins,
+                    title: {
+                        display: true,
+                        text: 'Overall Market Share Distribution',
+                        font: { size: 16, weight: '600', family: 'Inter' },
+                        color: '#e8eaed',
+                        padding: 20
+                    }
+                }
+            }
+        });
+
+        // Premium Market Chart
+        new Chart(document.getElementById('premiumMarketChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Apple', 'Samsung', 'OnePlus', 'Others'],
+                datasets: [{
+                    data: [71, 15, 8, 6],
+                    backgroundColor: ['#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                ...chartOptions,
+                plugins: {
+                    ...chartOptions.plugins,
+                    title: {
+                        display: true,
+                        text: 'Premium Segment (₹48K-₹64K)',
+                        font: { size: 16, weight: '600', family: 'Inter' },
+                        color: '#e8eaed',
+                        padding: 20
+                    }
+                }
+            }
+        });
+
+        // Brand Coefficients Chart
+        new Chart(document.getElementById('brandCoefficientsChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Apple', 'Google', 'realme', 'POCO', 'Vivo', 'IQOO', 'Samsung'],
+                datasets: [{
+                    label: 'Impact Coefficient',
+                    data: [0.558, 0.529, 0.515, 0.506, 0.492, 0.474, 0.316],
+                    backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                    borderColor: '#6366f1',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                ...chartOptions,
+                plugins: {
+                    ...chartOptions.plugins,
+                    title: {
+                        display: true,
+                        text: 'Brand Impact on Consumer Ratings',
+                        font: { size: 16, weight: '600', family: 'Inter' },
+                        color: '#e8eaed',
+                        padding: 20
+                    },
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(99, 102, 241, 0.1)' },
+                        ticks: { color: '#9ca3af' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#9ca3af' }
+                    }
+                }
+            }
+        });
+
+        // Price Range Chart
+        new Chart(document.getElementById('priceRangeChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Apple', 'Google', 'Samsung', 'Vivo', 'Oppo', 'realme', 'POCO', 'Infinix'],
+                datasets: [{
+                    label: 'Average Price (₹)',
+                    data: [81986, 65000, 35000, 28000, 26000, 18500, 17000, 15200],
+                    backgroundColor: ['#6366f1', '#7c75f3', '#8b5cf6', '#9d73f8', '#a78bfa', '#b9a3fc', '#c4b5fd', '#d8c7fe'],
+                    borderWidth: 0,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                ...chartOptions,
+                plugins: {
+                    ...chartOptions.plugins,
+                    title: {
+                        display: true,
+                        text: 'Average Selling Price by Brand',
+                        font: { size: 16, weight: '600', family: 'Inter' },
+                        color: '#e8eaed',
+                        padding: 20
+                    },
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(99, 102, 241, 0.1)' },
+                        ticks: { color: '#9ca3af' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#9ca3af' }
+                    }
+                }
+            }
+        });
+
+        // Storage Impact Chart
+        new Chart(document.getElementById('storageImpactChart'), {
+            type: 'bar',
+            data: {
+                labels: ['1TB', '512GB', '256GB', '128GB'],
+                datasets: [{
+                    label: 'Price Premium (₹)',
+                    data: [158219, 111617, 58654, 0],
+                    backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                    borderColor: '#6366f1',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                ...chartOptions,
+                plugins: {
+                    ...chartOptions.plugins,
+                    title: {
+                        display: true,
+                        text: 'Storage Impact on Price',
+                        font: { size: 16, weight: '600', family: 'Inter' },
+                        color: '#e8eaed',
+                        padding: 20
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(99, 102, 241, 0.1)' },
+                        ticks: { color: '#9ca3af' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#9ca3af' }
+                    }
+                }
+            }
+        });
+
+        // Discount Impact Chart
+        new Chart(document.getElementById('discountImpactChart'), {
+            type: 'bar',
+            data: {
+                labels: ['With Discount', 'Without Discount'],
+                datasets: [{
+                    label: 'Average Rating',
+                    data: [4.30, 4.20],
+                    backgroundColor: ['rgba(99, 102, 241, 0.8)', 'rgba(139, 92, 246, 0.6)'],
+                    borderColor: ['#6366f1', '#8b5cf6'],
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                ...chartOptions,
+                plugins: {
+                    ...chartOptions.plugins,
+                    title: {
+                        display: true,
+                        text: 'Impact of Discounts on Ratings',
+                        font: { size: 16, weight: '600', family: 'Inter' },
+                        color: '#e8eaed',
+                        padding: 20
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 4.0,
+                        max: 4.5,
+                        grid: { color: 'rgba(99, 102, 241, 0.1)' },
+                        ticks: { color: '#9ca3af' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#9ca3af' }
+                    }
+                }
+            }
+        });
+
+        // Rating Comparison
+        new Chart(document.getElementById('ratingComparisonChart'), {
+            type: 'line',
+            data: {
+                labels: ['Low Price', 'Mid Price', 'High Price', 'Premium'],
+                datasets: [{
+                    label: 'With Discount',
+                    data: [4.1, 4.25, 4.35, 4.45],
+                    borderColor: '#6366f1',
+                    backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 3
+                }, {
+                    label: 'Without Discount',
+                    data: [4.0, 4.15, 4.25, 4.35],
+                    borderColor: '#8b5cf6',
+                    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                ...chartOptions,
+                plugins: {
+                    ...chartOptions.plugins,
+                    title: {
+                        display: true,
+                        text: 'Rating Trends Across Price Segments',
+                        font: { size: 16, weight: '600', family: 'Inter' },
+                        color: '#e8eaed',
+                        padding: 20
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 3.8,
+                        max: 4.6,
+                        grid: { color: 'rgba(99, 102, 241, 0.1)' },
+                        ticks: { color: '#9ca3af' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#9ca3af' }
+                    }
+                }
+            }
+        });
+
+        // Smooth scrolling and active nav state
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                // Remove active class from all nav links
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Smooth scroll to section
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            });
+        });
+
+        // Update active nav on scroll
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('.section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

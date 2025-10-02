@@ -14,12 +14,12 @@ export default function Dashboards() {
     () => [
       {
         key: 'financial',
-        title: 'Financial Performance Dashboard',
+        title: 'Financial Performance',
         desc: 'Real-time tracking of KPIs, revenue streams, and cost centers to drive strategic financial decisions.',
         tags: ['Power BI', 'SQL', 'Azure'],
         impact: '15% Profit Margin Increase',
         modal: {
-          title: 'Financial Performance Dashboard',
+          title: 'Financial Performance',
           subtitle: 'Real-time tracking of KPIs, revenue streams, and cost centers.',
           metrics: [
             { value: '$820K', label: 'Total Annual Impact' },
