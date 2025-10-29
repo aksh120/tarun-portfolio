@@ -21,6 +21,9 @@ export const metadata = {
     description: 'Portfolio of Tarun Asrani – Data Analyst & Dashboard Storyteller',
   },
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
+  other: {
+    'darkreader-lock': '',
+  },
 };
 
 export default function RootLayout({ children }) {

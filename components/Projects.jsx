@@ -13,6 +13,35 @@ export default function Dashboards() {
   const dashboards = useMemo(
     () => [
       {
+        key: 'bi-transform',
+        title: 'Transforming Tomorrow: From Data to Discovery at Boehringer Ingelheim',
+        desc: 'Enterprise reporting and analytics modernization across supply, demand, and finance—driving faster decisions and resilient operations.',
+        tags: ['Analytics', 'Automation', 'Supply Chain'],
+        impact: 'Improved Decision Velocity',
+        modal: {
+          title: 'Transforming Tomorrow: From Data to Discovery at Boehringer Ingelheim',
+          subtitle: 'Highlights from EM 675 – streamlining analytics to accelerate discovery and outcomes.',
+          metrics: [
+            { value: '95%', label: 'Duplicate Data Reduction' },
+            { value: '90%', label: 'Faster Reports' },
+            { value: '75%', label: 'Less Manual Work' },
+            { value: '0', label: 'API Downtime' },
+            { value: '0', label: 'Security Breaches' },
+          ],
+          images: [
+            '/EM%20675%20Final%20Presentation/f0c8b051-2865-4157-a0dc-fbee5ef5d5d9-0.jpg',
+            '/EM%20675%20Final%20Presentation/f0c8b051-2865-4157-a0dc-fbee5ef5d5d9-1.jpg',
+            '/EM%20675%20Final%20Presentation/f0c8b051-2865-4157-a0dc-fbee5ef5d5d9-2.jpg',
+            '/EM%20675%20Final%20Presentation/f0c8b051-2865-4157-a0dc-fbee5ef5d5d9-3.jpg',
+            '/EM%20675%20Final%20Presentation/f0c8b051-2865-4157-a0dc-fbee5ef5d5d9-4.jpg',
+            '/EM%20675%20Final%20Presentation/f0c8b051-2865-4157-a0dc-fbee5ef5d5d9-5.jpg',
+            '/EM%20675%20Final%20Presentation/f0c8b051-2865-4157-a0dc-fbee5ef5d5d9-6.jpg',
+            '/EM%20675%20Final%20Presentation/f0c8b051-2865-4157-a0dc-fbee5ef5d5d9-7.jpg',
+            '/EM%20675%20Final%20Presentation/f0c8b051-2865-4157-a0dc-fbee5ef5d5d9-8.jpg',
+          ],
+        },
+      },
+      {
         key: 'financial',
         title: 'Financial Performance',
         desc: 'Real-time tracking of KPIs, revenue streams, and cost centers to drive strategic financial decisions.',
@@ -166,6 +195,8 @@ export default function Dashboards() {
         subtitle: active.modal.subtitle,
         metrics: active.modal.metrics,
         sections: active.modal.sections,
+        statsImage: active.modal.statsImage,
+        images: active.modal.images,
         links: active.modal.links,
       }} />
     </>
