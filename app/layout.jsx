@@ -20,7 +20,7 @@ export const metadata = {
     title: 'Tarun Asrani | Data Maverick',
     description: 'Portfolio of Tarun Asrani – Data Analyst & Dashboard Storyteller',
   },
-  icons: [{ rel: 'icon', url: '/favicon.ico' }],
+
   other: {
     'darkreader-lock': '',
   },
