@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Flexport Story - Interactive Dashboard 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tooltip-enter {
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .hover-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .hover-card {
+            transition: all 0.3s ease;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Dark mode scrollbar */
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gradient-to-br from-slate-50 via-sky-50 to-violet-50 min-h-screen dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950 dark:text-slate-200 transition-colors duration-300">
+    <div id="app"></div>
+
+    <script>
+        // Data
+        const storyData = {
+            traditionalPainPoints: [
+                { issue: 'Zero Visibility', impact: 'Shipments disappear for weeks', severity: 'critical', tooltip: 'No idea where stuff is' },
+                { issue: 'Manual Everything', impact: 'Human errors in 30% of docs', severity: 'high', tooltip: 'People doing robot work' },
+                { issue: 'Fragmented Systems', impact: 'Data in 10+ different places', severity: 'high', tooltip: 'Info scattered everywhere' },
+                { issue: 'Reactive Only', impact: 'Problems found after damage done', severity: 'critical', tooltip: 'Always firefighting' },
+                { issue: 'Email/Fax/Phone', impact: '5-7 business days for quotes', severity: 'medium', tooltip: 'Ancient tech' },
+                { issue: 'No Analytics', impact: 'Flying blind on costs', severity: 'high', tooltip: 'Guessing at everything' }
+            ],
+            flexportSolutions: [
+                { innovation: 'AI Intelligence', year: 2025, impact: 'Ask questions in plain English', adoption: 89, tooltip: 'Chat with your data' },
+                { innovation: 'Control Tower', year: 2025, impact: 'See everything in one place', adoption: 75, tooltip: 'Single dashboard view' },
+                { innovation: '80% Customs Automation', year: 2025, impact: 'AI handles paperwork', adoption: 92, tooltip: 'No manual forms' },
+                { innovation: 'AI Voice Agents', year: 2025, impact: '10K+ calls/day automated', adoption: 68, tooltip: 'Robot phone calls' },
+                { innovation: 'Real-Time Pricing', year: 2025, impact: 'Instant quotes', adoption: 100, tooltip: 'Price in seconds' },
+                { innovation: 'Predictive Analytics', year: 2026, impact: '2-week delay warnings', adoption: 71, tooltip: 'See problems early' }
+            ],
+            results: {
+                customers: { before: '600', now: '15,000', growth: '+2400%', tooltip: 'Massive growth' },
+                visibility: { before: '15%', now: '98%', growth: '+83pts', tooltip: 'Can see everything' },
+                costSavings: { before: '0%', now: '12%', growth: '+12%', tooltip: 'Save real money' },
+                customsSpeed: { before: '5-7 days', now: '24 hours', growth: '80% faster', tooltip: 'Lightning fast' },
+                employeeSat: { before: '48%', now: '82%', growth: '+34pts', tooltip: 'Happier workers' },
+                workerPay: { before: '$39', now: '$48', growth: '+$9/hr', tooltip: 'Better wages' }
+            },
+            workerStories: [
+                { name: 'Maria L.', role: 'Longshoreman', port: 'Savannah', years: 12, before: 'Surprise rushes, no warning, forced overtime', after: 'AI predicts arrivals 2 weeks out. I can plan my life.', satisfaction: 85 },
+                { name: 'James T.', role: 'Logistics Coordinator', port: 'Los Angeles', years: 8, before: '4 hrs/day hunting paperwork, constant firefighting', after: 'AI handles 80%. I focus on real problems. Home by 5pm.', satisfaction: 88 },
+                { name: 'Sarah K.', role: 'Customs Broker', port: 'Newark', years: 15, before: 'Manual entry, errors, compliance nightmares', after: 'AI does grunt work. I review and optimize. Less stress.', satisfaction: 91 },
+                { name: 'David W.', role: 'Warehouse Supervisor', port: 'Seattle', years: 10, before: 'Constantly checking phone, always anxious', after: 'AI calls me when things change. Proactive.', satisfaction: 79 }
+            ],
+            innovationTimeline: [
+                {
+                    date: 'Feb 2025', release: 'Winter Release', products: [
+                        { name: 'Flexport Intelligence', desc: 'Natural language AI', impact: 'Game changer', tooltip: 'Talk to your data' },
+                        { name: 'Control Tower', desc: 'See all shipments', impact: '10% savings', tooltip: 'One dashboard' },
+                        { name: 'Real-Time Pricing', desc: 'Instant quotes', impact: 'Industry first', tooltip: 'No more waiting' }
+                    ]
+                },
+                {
+                    date: 'Summer 2025', release: 'Summer Release', products: [
+                        { name: 'Intelligence 2.0', desc: 'Multi-language AI', impact: 'Global ready', tooltip: 'Works everywhere' },
+                        { name: 'AI Voice Agents', desc: 'Automated calls', impact: '10K calls/day', tooltip: 'Never sleeps' },
+                        { name: 'Enhanced Control Tower', desc: 'Carrier scorecards', impact: '12% savings', tooltip: 'Better insights' }
+                    ]
+                },
+                {
+                    date: 'Q4 2025', release: 'Milestone', products: [
+                        { name: '80% Customs Automation', desc: 'Target achieved', impact: 'Revolutionary', tooltip: 'Industry leading' },
+                        { name: 'Duty Drawback AI', desc: '20-40% higher returns', impact: 'Millions saved', tooltip: 'More money back' }
+                    ]
+                },
+                {
+                    date: 'Feb 2026', release: 'Current State', products: [
+                        { name: 'Predictive Delay AI', desc: '2-week warnings', impact: 'Beta', tooltip: 'See future problems' },
+                        { name: 'Full Integration', desc: 'Seamless platform', impact: 'Complete', tooltip: 'Everything works' }
+                    ]
+                }
+            ]
+        };
+
+        // State
+        let activeView = 'story';
+        let hoveredBar = null;
+        let hoveredPoint = null;
+
+        // Bar Chart Component
+        function createBarChart(data, colorScheme, title, containerId) {
+            const maxValue = Math.max(...data.map(d => d.value));
+            const colors = {
+                red: { bar: '#EF4444', hover: '#DC2626', bg: '#FEE2E2' },
+                green: { bar: '#10B981', hover: '#059669', bg: '#D1FAE5' },
+                blue: { bar: '#0EA5E9', hover: '#0284C7', bg: '#E0F2FE' }
+            };
+
+            const html = data.map((item, idx) => {
+                const percentage = (item.value / maxValue) * 100;
+                const mapColor = { red: 'rose', green: 'emerald', blue: 'sky' };
+                const twColor = mapColor[colorScheme];
+
+                return `
+                    <div class="relative mb-3">
+                        <div class="flex items-center gap-4">
+                            <div class="w-36 text-sm text-slate-700 dark:text-slate-300 font-medium">${item.name}</div>
+                            <div class="flex-1 relative bar-container group" data-chart="${title}" data-index="${idx}">
+                                <div class="h-12 rounded-xl overflow-hidden bg-${twColor}-100 dark:bg-${twColor}-900/30 transition-colors">
+                                    <div class="bar h-full rounded-xl flex items-center justify-end pr-4 text-white font-semibold transition-all duration-500 shadow-sm bg-${twColor}-500 group-hover:bg-${twColor}-600" 
+                                         style="width: ${percentage}%;">
+                                        ${percentage > 20 ? item.value : ''}
+                                    </div>
+                                </div>
+                                <div class="tooltip-box hidden absolute left-0 -top-20 bg-slate-800 dark:bg-slate-700 text-white px-4 py-3 rounded-xl shadow-2xl z-20 tooltip-enter border border-slate-700 dark:border-slate-600">
+                                    <div class="font-bold text-base mb-1">${item.tooltip || item.name}</div>
+                                    <div class="text-sm text-slate-300">Value: ${item.value}</div>
+                                    <div class="absolute bottom-0 left-8 transform translate-y-1/2 rotate-45 w-3 h-3 bg-slate-800 dark:bg-slate-700 border-r border-b border-slate-700 dark:border-slate-600"></div>
+                                </div>
+                            </div>
+                            ${percentage <= 20 ? `<div class="w-12 text-sm font-semibold text-slate-700 dark:text-slate-300">${item.value}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById(containerId).innerHTML = html;
+
+            // Add hover listeners
+            document.querySelectorAll(`.bar-container[data-chart="${title}"]`).forEach(container => {
+                const tooltip = container.querySelector('.tooltip-box');
+
+                container.addEventListener('mouseenter', () => {
+                    tooltip.classList.remove('hidden');
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    tooltip.classList.add('hidden');
+                });
+            });
+        }
+
+
+        // Line Chart Component
+        function createLineChart(data, dataKey, colorScheme, label, containerId) {
+            const maxValue = Math.max(...data.map(d => d[dataKey]));
+            const minValue = Math.min(...data.map(d => d[dataKey]));
+            const range = maxValue - minValue;
+
+            const colors = {
+                blue: { stroke: '#0EA5E9', fill: '#0EA5E9' },
+                purple: { stroke: '#A855F7', fill: '#A855F7' },
+                green: { stroke: '#10B981', fill: '#10B981' }
+            };
+
+            // Create SVG path
+            const points = data.map((d, i) => {
+                const x = (i / (data.length - 1)) * 100;
+                const y = 40 - ((d[dataKey] - minValue) / range) * 32;
+                return { x, y, value: d[dataKey], label: d.year || d.month };
+            });
+
+            const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x},${p.y}`).join(' ');
+            const areaPath = `M 0,40 ${points.map(p => `L ${p.x},${p.y}`).join(' ')} L 100,40 Z`;
+
+            const html = `
+                <div class="relative h-64 bg-gradient-to-b from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm transition-colors duration-300">
+                    <div class="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-4">${label}</div>
+                    <svg class="w-full h-full" viewBox="0 0 100 40" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="grad-${colorScheme}" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color: ${colors[colorScheme].stroke}; stop-opacity: 0.3" />
+                                <stop offset="100%" style="stop-color: ${colors[colorScheme].stroke}; stop-opacity: 0" />
+                            </linearGradient>
+                        </defs>
+                        <path d="${areaPath}" fill="url(#grad-${colorScheme})" />
+                        <path d="${linePath}" fill="none" stroke="${colors[colorScheme].stroke}" stroke-width="0.6" />
+                        ${points.map((p, i) => `
+                            <circle class="line-point cursor-pointer transition-all" 
+                                    cx="${p.x}" cy="${p.y}" r="1.2" 
+                                    fill="${colors[colorScheme].fill}"
+                                    data-index="${i}" data-value="${p.value}" data-label="${p.label}" />
+                        `).join('')}
+                    </svg>
+                    <div id="line-tooltip-${containerId}" class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-800 dark:bg-slate-700 text-white px-5 py-3 rounded-xl shadow-2xl z-20 tooltip-enter border border-slate-700 dark:border-slate-600">
+                        <div class="text-xs text-slate-300 mb-1">Year</div>
+                        <div class="text-2xl font-bold">Value</div>
+                    </div>
+                    <div class="flex justify-between mt-3 text-xs text-slate-500 dark:text-slate-400">
+                        <span>${data[0].year || data[0].month}</span>
+                        <span>${data[Math.floor(data.length / 2)].year || data[Math.floor(data.length / 2)].month}</span>
+                        <span>${data[data.length - 1].year || data[data.length - 1].month}</span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById(containerId).innerHTML = html;
+
+            // Add hover to points
+            document.querySelectorAll(`#${containerId} .line-point`).forEach(point => {
+                const tooltip = document.getElementById(`line-tooltip-${containerId}`);
+
+                point.addEventListener('mouseenter', (e) => {
+                    const value = e.target.dataset.value;
+                    const label = e.target.dataset.label;
+                    tooltip.innerHTML = `
+                        <div class="text-xs text-slate-300 mb-1">${label}</div>
+                        <div class="text-2xl font-bold">${value}%</div>
+                    `;
+                    tooltip.classList.remove('hidden');
+                    point.setAttribute('r', '1.8');
+                });
+
+                point.addEventListener('mouseleave', () => {
+                    tooltip.classList.add('hidden');
+                    point.setAttribute('r', '1.2');
+                });
+            });
+        }
+
+        // Render function
+        function render() {
+            const app = document.getElementById('app');
+
+            app.innerHTML = `
+                <!-- Hero -->
+                <div class="bg-slate-900 text-white border-b border-slate-800 transition-colors duration-300 relative overflow-hidden">
+                    <!-- Subtle premium accent -->
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+                    
+                    <div class="max-w-7xl mx-auto px-8 py-20 relative z-10">
+                        <div class="flex flex-col gap-6">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/50 border border-slate-700/50 w-fit text-xs font-medium text-slate-300 tracking-widest uppercase">
+                                <span class="relative flex h-2 w-2">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
+                                February 2026 Edition
+                            </div>
+                            
+                            <h1 class="text-5xl md:text-7xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">
+                                The Flexport Story
+                            </h1>
+                            
+                            <div class="h-1 w-20 bg-indigo-500 rounded-full"></div>
+
+                            <p class="text-xl md:text-2xl text-slate-400 max-w-3xl font-light leading-relaxed">
+                                From pen & paper to <span class="text-white font-medium">AI-powered predictive analytics</span>. 
+                                The 13-year journey reshaping a trillion-dollar industry.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10 shadow-sm transition-colors duration-300">
+                    <div class="max-w-7xl mx-auto px-8 flex items-center justify-between">
+                        <div class="flex gap-2 overflow-x-auto no-scrollbar py-1">
+                            ${['story', 'problem', 'solution', 'results', 'workers', 'innovations', 'why'].map(view => {
+                const icons = {
+                    story: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>',
+                    problem: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>',
+                    solution: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
+                    results: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>',
+                    workers: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>',
+                    innovations: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>',
+                    why: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>'
+                };
+                const colors = {
+                    story: 'sky', problem: 'rose', solution: 'emerald', results: 'violet',
+                    workers: 'amber', innovations: 'indigo', why: 'sky'
+                };
+                const isActive = activeView === view;
+                const viewName = view.charAt(0).toUpperCase() + view.slice(1);
+
+                return `
+                                    <button onclick="changeView('${view}')" 
+                                            class="px-6 py-4 transition-all whitespace-nowrap rounded-t-lg flex items-center gap-2 ${isActive
+                        ? `bg-${colors[view]}-50 dark:bg-${colors[view]}-900/20 text-${colors[view]}-700 dark:text-${colors[view]}-300 font-bold border-b-2 border-${colors[view]}-500`
+                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium'
+                    }">
+                                        ${icons[view]}
+                                        <span>${viewName}</span>
+                                    </button>
+                                `;
+            }).join('')}
+                        </div>
+                        
+                        <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors ml-4">
+                            <svg class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                            <svg class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="max-w-7xl mx-auto px-8 py-12">
+                    <div id="content"></div>
+                </div>
+            `;
+
+            renderContent();
+        }
+
+        // Render content based on active view
+        function renderContent() {
+            const content = document.getElementById('content');
+
+            if (activeView === 'story') {
+                content.innerHTML = `
+                    <div class="space-y-8">
+                        <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl border border-slate-200 dark:border-slate-700 p-12 text-center shadow-xl transition-colors duration-300">
+                            <h2 class="text-4xl font-bold mb-6 text-slate-800 dark:text-white">The Logistics Revolution Timeline</h2>
+                            <p class="text-xl text-slate-600 dark:text-slate-300 mb-12 max-w-3xl mx-auto">In 2013, logistics was stuck in 1980. By 2026, Flexport transformed the industry.</p>
+                            
+                            <div class="relative py-8">
+                                <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-rose-400 via-sky-400 to-emerald-400 rounded-full"></div>
+                                <div class="space-y-20">
+                                    ${[
+                        { year: '1980-2013', title: 'Dark Ages', desc: 'Pen & paper, fax, zero visibility', color: 'rose' },
+                        { year: '2013', title: 'Founded', desc: 'Why can\'t logistics work like software?', color: 'sky' },
+                        { year: '2013-2024', title: 'Building', desc: '$2.3B raised, 10K customers, real-time tracking', color: 'violet' },
+                        { year: '2025', title: 'AI Breakthrough', desc: '20+ AI products, 80% customs automation', color: 'indigo' },
+                        { year: '2026', title: 'Market Leader', desc: '$8B valuation, 15K customers, 98% visibility', color: 'emerald' },
+                        { year: '2030', title: 'Future', desc: '100% visibility, 95% automation, carbon neutral', color: 'teal' }
+                    ].map((m, i) => `
+                                        <div class="relative">
+                                            <div class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-2xl bg-gradient-to-br from-${m.color}-400 to-${m.color}-600 flex items-center justify-center z-10 border-4 border-white dark:border-slate-800 shadow-2xl hover:scale-110 transition-transform">
+                                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="${i % 2 === 0 ? 'mr-auto pr-16 text-right' : 'ml-auto pl-16 text-left'} w-5/12 bg-white/80 dark:bg-slate-800/80 border-2 border-${m.color}-200 dark:border-${m.color}-900/50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all">
+                                                <div class="text-2xl font-bold text-${m.color}-700 dark:text-${m.color}-400 mb-2">${m.year}</div>
+                                                <div class="text-xl font-semibold text-${m.color}-900 dark:text-${m.color}-200 mb-3">${m.title}</div>
+                                                <p class="text-slate-700 dark:text-slate-400">${m.desc}</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-6">
+                            ${[
+                        { value: '13 Years', desc: 'Startup to leader', color: 'sky' },
+                        { value: '$2.3B', desc: 'Total funding', color: 'violet' },
+                        { value: '15K+', desc: 'Companies transformed', color: 'emerald' }
+                    ].map(s => `
+                                <div class="bg-white/80 dark:bg-slate-800/80 rounded-2xl p-8 border-2 border-${s.color}-200 dark:border-${s.color}-900/50 text-center shadow-lg hover:shadow-xl hover:scale-105 transition-all hover-card">
+                                    <div class="text-5xl font-bold text-${s.color}-600 dark:text-${s.color}-400 mb-3">${s.value}</div>
+                                    <div class="text-slate-600 dark:text-slate-400 font-medium">${s.desc}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (activeView === 'problem') {
+                content.innerHTML = `
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-3xl font-bold mb-2 text-slate-800 dark:text-white">Chapter 1: The Problem</h2>
+                            <p class="text-slate-600 dark:text-slate-400">What was broken in traditional logistics</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-rose-50 to-orange-50 dark:from-rose-950/30 dark:to-orange-950/30 rounded-3xl p-8 border-2 border-rose-200 dark:border-rose-900/50 shadow-xl">
+                            <h3 class="text-2xl font-bold text-rose-900 dark:text-rose-200 mb-6">Traditional Freight Forwarding Pain Points</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                ${storyData.traditionalPainPoints.map(p => `
+                                    <div class="bg-white/80 dark:bg-slate-800/80 rounded-2xl p-6 border-l-4 border-rose-500 shadow-md hover:shadow-lg transition-all hover-card">
+                                        <div class="flex items-start gap-3">
+                                            <svg class="w-6 h-6 text-rose-600 dark:text-rose-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                            </svg>
+                                            <div class="flex-1">
+                                                <h4 class="font-bold text-lg text-rose-900 dark:text-rose-200 mb-1">${p.issue}</h4>
+                                                <p class="text-rose-800 dark:text-rose-300/80">${p.impact}</p>
+                                            </div>
+                                            <span class="px-3 py-1 rounded-full text-xs font-bold ${p.severity === 'critical' ? 'bg-rose-200 dark:bg-rose-900 text-rose-900 dark:text-rose-200' :
+                        p.severity === 'high' ? 'bg-orange-200 dark:bg-orange-900 text-orange-900 dark:text-orange-200' :
+                            'bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-200'
+                    }">${p.severity.toUpperCase()}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="bg-white/80 dark:bg-slate-800/80 rounded-3xl border border-slate-200 dark:border-slate-700 p-8 shadow-xl">
+                            <h3 class="text-xl font-bold mb-6 text-slate-800 dark:text-white">Traditional Cost Structure</h3>
+                            <div id="traditional-chart"></div>
+                            <div class="mt-6 p-6 bg-rose-50 dark:bg-rose-900/20 rounded-2xl border border-rose-200 dark:border-rose-900/40">
+                                <div class="text-3xl font-bold text-rose-600 dark:text-rose-400 mb-2">100 Cost Units</div>
+                                <p class="text-rose-800 dark:text-rose-200">35% wasted on manual work AI could eliminate</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                setTimeout(() => {
+                    createBarChart([
+                        { name: 'Manual Processing', value: 35, tooltip: 'People doing robot work' },
+                        { name: 'Errors & Delays', value: 25, tooltip: 'Mistakes and waiting' },
+                        { name: 'Visibility Gaps', value: 15, tooltip: 'Lost in the dark' },
+                        { name: 'Communication', value: 15, tooltip: 'Email ping pong' },
+                        { name: 'Compliance', value: 10, tooltip: 'Regulatory headaches' }
+                    ], 'red', 'traditional', 'traditional-chart');
+                }, 100);
+            } else if (activeView === 'solution') {
+                content.innerHTML = `
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-3xl font-bold mb-2 text-slate-800 dark:text-white">Chapter 2: The Solution</h2>
+                            <p class="text-slate-600 dark:text-slate-400">How Flexport rebuilt logistics with AI</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-sky-50 to-violet-50 dark:from-sky-950/30 dark:to-violet-950/30 rounded-3xl p-8 border-2 border-sky-200 dark:border-sky-900/50 shadow-xl">
+                            <h3 class="text-2xl font-bold mb-6 text-slate-800 dark:text-slate-200">AI-Powered Innovations</h3>
+                            <div class="space-y-4">
+                                ${storyData.flexportSolutions.map(s => `
+                                    <div class="bg-white/80 dark:bg-slate-800/80 rounded-2xl p-6 flex items-start gap-4 border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all hover-card">
+                                        <div class="p-3 bg-gradient-to-br from-sky-500 to-violet-600 rounded-xl shadow-md">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <h4 class="font-bold text-lg text-slate-800 dark:text-white">${s.innovation}</h4>
+                                                <span class="text-xs font-bold bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 px-3 py-1 rounded-full">${s.year}</span>
+                                            </div>
+                                            <p class="text-slate-700 dark:text-slate-300 mb-3">${s.impact}</p>
+                                            <div class="flex items-center gap-3">
+                                                <div class="flex-1 h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                                                    <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full transition-all duration-1000" style="width: ${s.adoption}%"></div>
+                                                </div>
+                                                <span class="text-sm font-semibold text-emerald-600 dark:text-emerald-400 min-w-[5rem] text-right">${s.adoption}% adoption</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="bg-white/80 dark:bg-slate-800/80 rounded-3xl border border-slate-200 dark:border-slate-700 p-8 shadow-xl">
+                            <h3 class="text-xl font-bold mb-6 text-slate-800 dark:text-white">Optimized Cost Structure</h3>
+                            <div id="flexport-chart"></div>
+                            <div class="mt-6 p-6 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl border border-emerald-200 dark:border-emerald-900/40">
+                                <div class="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">20 Units (80% Reduction)</div>
+                                <p class="text-emerald-800 dark:text-emerald-200">AI-first architecture eliminates waste</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                setTimeout(() => {
+                    createBarChart([
+                        { name: 'AI Automation', value: 8, tooltip: 'Smart robots working' },
+                        { name: 'Predictive', value: 5, tooltip: 'See the future' },
+                        { name: 'Platform', value: 3, tooltip: 'All in one place' },
+                        { name: 'Real-time', value: 2, tooltip: 'Instant updates' },
+                        { name: 'Compliance', value: 2, tooltip: 'Auto paperwork' }
+                    ], 'green', 'flexport', 'flexport-chart');
+                }, 100);
+            } else if (activeView === 'results') {
+                content.innerHTML = `
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-3xl font-bold mb-2 text-slate-800 dark:text-white">Chapter 3: The Results</h2>
+                            <p class="text-slate-600 dark:text-slate-400">Measurable transformation</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            ${Object.entries(storyData.results).map(([k, d]) => `
+                                <div class="bg-white/80 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-lg hover:shadow-xl transition-all hover-card group">
+                                    <h4 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase mb-4 tracking-wider">${k.replace(/([A-Z])/g, ' $1')}</h4>
+                                    
+                                    <div class="flex items-center justify-between min-h-[5rem]">
+                                        <div class="flex flex-col">
+                                            <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">Before</div>
+                                            <div class="text-2xl font-bold text-rose-600 dark:text-rose-400 group-hover:scale-105 transition-transform origin-left">${d.before}</div>
+                                        </div>
+                                        
+                                        <div class="flex flex-col items-center justify-center px-4">
+                                            <svg class="w-6 h-6 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                            </svg>
+                                        </div>
+
+                                        <div class="flex flex-col items-end">
+                                            <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">2026</div>
+                                            <div class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform origin-right">${d.now}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/50 flex justify-between items-center">
+                                        <div class="text-xs text-slate-400 dark:text-slate-500">Impact</div>
+                                        <div class="text-sm font-black text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/30 px-2 py-1 rounded-md">${d.growth}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="bg-white/80 dark:bg-slate-800/60 rounded-3xl border border-slate-200 dark:border-slate-700 p-8 shadow-xl">
+                            <h3 class="text-xl font-bold mb-6 text-slate-800 dark:text-white">Employee Satisfaction Growth</h3>
+                            <div id="satisfaction-chart"></div>
+                        </div>
+                    </div>
+                `;
+                setTimeout(() => {
+                    createLineChart([
+                        { year: '2013', value: 48 },
+                        { year: '2015', value: 52 },
+                        { year: '2017', value: 61 },
+                        { year: '2019', value: 68 },
+                        { year: '2021', value: 73 },
+                        { year: '2023', value: 77 },
+                        { year: '2025', value: 79 },
+                        { year: '2026', value: 82 }
+                    ], 'value', 'purple', 'Satisfaction %', 'satisfaction-chart');
+                }, 100);
+            } else if (activeView === 'workers') {
+                content.innerHTML = `
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-3xl font-bold mb-2 text-slate-800 dark:text-white">Chapter 4: Human Impact</h2>
+                            <p class="text-slate-600 dark:text-slate-400">How tech improved life for 47K+ workers</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 rounded-3xl p-8 border-2 border-emerald-300 dark:border-emerald-700 shadow-xl">
+                            <div class="flex items-center gap-4 mb-6">
+                                <svg class="w-12 h-12 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                                </svg>
+                                <div>
+                                    <h3 class="text-2xl font-bold text-emerald-900 dark:text-emerald-100">ILA Contract (2024-2030)</h3>
+                                    <p class="text-emerald-700 dark:text-emerald-200">Year 2 of 6: Zero automation layoffs</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                                ${[
+                        { value: '+62%', label: 'Wage Increase', sub: '$39 → $63/hr by 2030' },
+                        { value: '$48', label: 'Current Hourly', sub: 'Year 2 of contract' },
+                        { value: '$152K', label: 'Avg Total 2026', sub: 'With overtime' },
+                        { value: '82%', label: 'Satisfaction', sub: 'Up from 48%' }
+                    ].map(s => `
+                                    <div class="bg-white dark:bg-slate-800 rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-all hover-card">
+                                        <div class="text-4xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">${s.value}</div>
+                                        <div class="text-sm text-slate-700 dark:text-slate-300 font-semibold mb-1">${s.label}</div>
+                                        <div class="text-xs text-slate-500 dark:text-slate-400">${s.sub}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="bg-white/80 dark:bg-slate-800/80 rounded-3xl border border-slate-200 dark:border-slate-700 p-8 shadow-xl">
+                            <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-slate-800 dark:text-white">
+                                <svg class="w-6 h-6 text-rose-500" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                                </svg>
+                                Real Stories
+                            </h3>
+                            <div class="grid grid-cols-2 gap-6">
+                                ${storyData.workerStories.map(w => `
+                                    <div class="border-2 border-slate-200 dark:border-slate-700 rounded-xl p-6 hover:border-sky-300 dark:hover:border-sky-500 transition-all hover-card bg-white/50 dark:bg-slate-800/50">
+                                        <div class="flex items-start gap-4 mb-4">
+                                            <div class="w-16 h-16 bg-gradient-to-br from-sky-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md">
+                                                ${w.name.split(' ').map(n => n[0]).join('')}
+                                            </div>
+                                            <div class="flex-1">
+                                                <h4 class="font-bold text-lg text-slate-800 dark:text-white">${w.name}</h4>
+                                                <div class="text-sm text-slate-600 dark:text-slate-300">${w.role}</div>
+                                                <div class="text-xs text-slate-500 dark:text-slate-400">${w.port} • ${w.years}yrs</div>
+                                            </div>
+                                            <div class="text-right">
+                                                <div class="text-2xl font-bold text-emerald-600 dark:text-emerald-400">${w.satisfaction}%</div>
+                                                <div class="text-xs text-slate-500 dark:text-slate-400">Happy</div>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-3">
+                                            <div class="p-3 bg-rose-50 dark:bg-rose-900/20 rounded-lg border-l-4 border-rose-400 dark:border-rose-600">
+                                                <div class="text-xs font-semibold text-rose-700 dark:text-rose-300 mb-1">BEFORE</div>
+                                                <p class="text-sm text-rose-900 dark:text-rose-100 italic">"${w.before}"</p>
+                                            </div>
+                                            <div class="p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border-l-4 border-emerald-400 dark:border-emerald-600">
+                                                <div class="text-xs font-semibold text-emerald-700 dark:text-emerald-300 mb-1">AFTER</div>
+                                                <p class="text-sm text-emerald-900 dark:text-emerald-100 italic">"${w.after}"</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (activeView === 'innovations') {
+                content.innerHTML = `
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-3xl font-bold mb-2 text-slate-800 dark:text-white">Chapter 5: The Innovation Wave (2025-2026)</h2>
+                            <p class="text-slate-600 dark:text-slate-400">20+ AI products launched in 12 months</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 rounded-3xl p-8 border-2 border-indigo-300 dark:border-indigo-700 shadow-xl">
+                            <h3 class="text-2xl font-bold mb-6 flex items-center gap-2 text-indigo-900 dark:text-indigo-100">
+                                <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                Semi-Annual Product Releases
+                            </h3>
+                            <p class="text-slate-700 dark:text-slate-300 mb-8">Inspired by "Founder Mode" - faster innovation, more customer value</p>
+                            
+                            ${storyData.innovationTimeline.map(release => `
+                                <div class="mb-8 last:mb-0">
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <div class="px-4 py-2 bg-indigo-600 dark:bg-indigo-500 text-white rounded-lg font-bold">${release.date}</div>
+                                        <h4 class="text-xl font-bold text-slate-800 dark:text-white">${release.release}</h4>
+                                    </div>
+                                    <div class="grid gap-4">
+                                        ${release.products.map(product => `
+                                            <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border-2 border-indigo-200 dark:border-indigo-700 hover:border-indigo-400 dark:hover:border-indigo-500 transition-all hover-card">
+                                                <div class="flex items-start justify-between mb-3">
+                                                    <div class="flex items-center gap-3">
+                                                        <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                                        </svg>
+                                                        <h5 class="font-bold text-lg text-slate-800 dark:text-white">${product.name}</h5>
+                                                    </div>
+                                                    <span class="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-bold">${product.impact}</span>
+                                                </div>
+                                                <p class="text-slate-700 dark:text-slate-300">${product.desc}</p>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-3xl p-12 shadow-xl">
+                            <h3 class="text-3xl font-bold mb-6 text-center">Summer 2026 Preview</h3>
+                            <div class="grid grid-cols-3 gap-6">
+                                ${[
+                        { name: 'Predictive Customs AI', desc: 'Know which shipments get stopped 30 days early' },
+                        { name: 'Carbon-Neutral Routing', desc: 'One-click to offset 100% emissions' },
+                        { name: 'Full Supply Chain OS', desc: 'Suppliers → Manufacturing → Fulfillment unified' }
+                    ].map(preview => `
+                                    <div class="bg-white/10 backdrop-blur rounded-xl p-6 border-2 border-white/30 hover-card">
+                                        <h4 class="font-bold text-lg mb-2">${preview.name}</h4>
+                                        <p class="text-sm text-purple-100">${preview.desc}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (activeView === 'why') {
+                content.innerHTML = `
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-3xl font-bold mb-2 text-slate-800 dark:text-white flex items-center gap-3">
+                                Chapter 6: Why Choose Flexport?
+                            </h2>
+                            <p class="text-slate-600 dark:text-slate-400">The definitive answer for decision makers</p>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-6">
+                            ${[
+                        {
+                            icon: '<div class="p-3 bg-violet-100 dark:bg-violet-900/30 rounded-2xl w-fit"><svg class="w-8 h-8 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg></div>',
+                            title: 'AI-First Platform',
+                            desc: 'Built for 2026, not 1986',
+                            stats: ['80% customs automated', 'Predictive analytics', 'Natural language']
+                        },
+                        {
+                            icon: '<div class="p-3 bg-sky-100 dark:bg-sky-900/30 rounded-2xl w-fit"><svg class="w-8 h-8 text-sky-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg></div>',
+                            title: 'Complete Visibility',
+                            desc: 'See everything, predict everything',
+                            stats: ['98% real-time', 'SKU-level tracking', '2-week warnings']
+                        },
+                        {
+                            icon: '<div class="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl w-fit"><svg class="w-8 h-8 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>',
+                            title: 'Proven Savings',
+                            desc: 'Average 12% cost reduction',
+                            stats: ['10-12% freight', '20-40% duty drawback', '80% less work']
+                        }
+                    ].map(prop => `
+                                <div class="bg-gradient-to-br from-sky-50 to-violet-50 dark:from-sky-950/30 dark:to-violet-950/30 rounded-3xl p-8 border-2 border-sky-300 dark:border-sky-700 shadow-xl hover:shadow-2xl transition-all hover-card">
+                                    <div class="mb-6">${prop.icon}</div>
+                                    <h3 class="text-xl font-bold mb-2 text-slate-800 dark:text-white">${prop.title}</h3>
+                                    <p class="text-slate-700 dark:text-slate-300 mb-4">${prop.desc}</p>
+                                    <ul class="space-y-2">
+                                        ${prop.stats.map(stat => `
+                                            <li class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                                                <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                                <span class="font-semibold text-slate-700 dark:text-slate-300">${stat}</span>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 rounded-3xl p-8 border-2 border-emerald-300 dark:border-emerald-700 shadow-xl">
+                            <h3 class="text-2xl font-bold mb-6 text-slate-800 dark:text-white">Average Customer ROI (First Year)</h3>
+                            <div class="flex items-center justify-center gap-8">
+                                <div class="text-center bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg hover-card">
+                                    <div class="text-5xl font-bold text-rose-600 dark:text-rose-400 mb-3">$500K</div>
+                                    <div class="text-slate-700 dark:text-slate-200 font-semibold">Annual Logistics Spend</div>
+                                    <div class="text-sm text-slate-500 dark:text-slate-400">Typical mid-size company</div>
+                                </div>
+                                
+                                <svg class="w-12 h-12 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                                
+                                <div class="text-center bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg hover-card">
+                                    <div class="text-5xl font-bold text-emerald-600 dark:text-emerald-400 mb-3">$60K</div>
+                                    <div class="text-slate-700 dark:text-slate-200 font-semibold">First Year Savings</div>
+                                    <div class="text-sm text-slate-500 dark:text-slate-400">12% average reduction</div>
+                                </div>
+                                
+                                <svg class="w-12 h-12 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                                
+                                <div class="text-center bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg hover-card">
+                                    <div class="text-5xl font-bold text-emerald-600 dark:text-emerald-400 mb-3">6mo</div>
+                                    <div class="text-slate-700 dark:text-slate-200 font-semibold">Payback Period</div>
+                                    <div class="text-sm text-slate-500 dark:text-slate-400">Positive ROI fast</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                `;
+            }
+        }
+
+        // Change view function
+        function changeView(view) {
+            activeView = view;
+            render();
+        }
+
+        // Toggle Theme
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        // Initialize
+        // Check for saved theme or system preference
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+
+
+
+        // Toggle Theme
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        render();
+    </script>
+</body>
+
+</html>

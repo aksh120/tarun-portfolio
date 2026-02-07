@@ -1,14 +1,24 @@
+"use client";
+
 import { Linkedin, Github, Twitter, Mail } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  // Hide footer on specific project dashboards that need full screen
+  if (pathname?.startsWith('/projects/')) {
+    return null;
+  }
+
   return (
     <footer className="mt-16 border-t border-slate-200/60 dark:border-white/10">
       <div className="container py-6">
         <div className="flex flex-col items-center justify-between gap-4 text-sm text-muted-foreground md:flex-row">
           <p className="text-center md:text-left"> {new Date().getFullYear()} Tarun Asrani • Turning Data Into Insights to Make Decisions • Open to Relocate</p>
-          
+
           <div className="w-full h-px bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10 md:hidden" />
-          
+
           <div className="flex items-center gap-4">
             {[
               { Icon: Linkedin, href: '#', label: 'LinkedIn' },
