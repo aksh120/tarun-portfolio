@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import Section from './ui/section';
 import Reveal from './ui/reveal';
 import ProjectModal from './ui/project-modal';
@@ -9,9 +10,18 @@ import { Sparkles } from 'lucide-react';
 export default function Dashboards() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(null);
+  const router = useRouter();
 
   const dashboards = useMemo(
     () => [
+      {
+        key: 'enterprise-data',
+        title: 'Enterprise Data Modernization',
+        desc: 'End-to-end analytics platform architecture that streamlined tracking and accelerated insights through unified dashboards, improved data latency, and enhanced KPI visibility.',
+        tags: ['Analytics', 'Power BI', 'SQL', 'Data Engineering'],
+        impact: 'Unified Enterprise Analytics',
+        link: '/projects/enterprise-data-modernization',
+      },
       {
         key: 'bi-transform',
         title: 'Transforming Tomorrow: From Data to Discovery at Boehringer Ingelheim',
@@ -131,14 +141,18 @@ export default function Dashboards() {
           ],
         },
       },
-      
+
     ],
     []
   );
 
   const openModal = (item) => {
-    setActive(item);
-    setOpen(true);
+    if (item.link) {
+      router.push(item.link);
+    } else {
+      setActive(item);
+      setOpen(true);
+    }
   };
 
   return (
@@ -155,17 +169,17 @@ export default function Dashboards() {
               >
                 <div className="relative h-40 bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-600 rounded-t-3xl">
                   <div className="absolute inset-x-8 bottom-6 flex items-end justify-between gap-1.5" aria-hidden>
-                    <div className="w-5 rounded-md bg-white/45 origin-bottom animate-bar-wave" style={{height:'38px', animationDelay:'0s'}} />
-                    <div className="w-5 rounded-md bg-white/40 origin-bottom animate-bar-wave" style={{height:'60px', animationDelay:'.09s'}} />
-                    <div className="w-5 rounded-md bg-white/35 origin-bottom animate-bar-wave" style={{height:'86px', animationDelay:'.18s'}} />
-                    <div className="w-5 rounded-md bg-white/30 origin-bottom animate-bar-wave" style={{height:'54px', animationDelay:'.27s'}} />
-                    <div className="w-5 rounded-md bg-white/35 origin-bottom animate-bar-wave" style={{height:'104px', animationDelay:'.36s'}} />
-                    <div className="w-5 rounded-md bg-white/30 origin-bottom animate-bar-wave" style={{height:'72px', animationDelay:'.45s'}} />
-                    <div className="w-5 rounded-md bg-white/35 origin-bottom animate-bar-wave" style={{height:'92px', animationDelay:'.54s'}} />
-                    <div className="w-5 rounded-md bg-white/30 origin-bottom animate-bar-wave" style={{height:'52px', animationDelay:'.63s'}} />
-                    <div className="w-5 rounded-md bg-white/40 origin-bottom animate-bar-wave" style={{height:'80px', animationDelay:'.72s'}} />
-                    <div className="w-5 rounded-md bg-white/35 origin-bottom animate-bar-wave" style={{height:'60px', animationDelay:'.81s'}} />
-                    <div className="w-5 rounded-md bg-white/30 origin-bottom animate-bar-wave" style={{height:'70px', animationDelay:'.90s'}} />
+                    <div className="w-5 rounded-md bg-white/45 origin-bottom animate-bar-wave" style={{ height: '38px', animationDelay: '0s' }} />
+                    <div className="w-5 rounded-md bg-white/40 origin-bottom animate-bar-wave" style={{ height: '60px', animationDelay: '.09s' }} />
+                    <div className="w-5 rounded-md bg-white/35 origin-bottom animate-bar-wave" style={{ height: '86px', animationDelay: '.18s' }} />
+                    <div className="w-5 rounded-md bg-white/30 origin-bottom animate-bar-wave" style={{ height: '54px', animationDelay: '.27s' }} />
+                    <div className="w-5 rounded-md bg-white/35 origin-bottom animate-bar-wave" style={{ height: '104px', animationDelay: '.36s' }} />
+                    <div className="w-5 rounded-md bg-white/30 origin-bottom animate-bar-wave" style={{ height: '72px', animationDelay: '.45s' }} />
+                    <div className="w-5 rounded-md bg-white/35 origin-bottom animate-bar-wave" style={{ height: '92px', animationDelay: '.54s' }} />
+                    <div className="w-5 rounded-md bg-white/30 origin-bottom animate-bar-wave" style={{ height: '52px', animationDelay: '.63s' }} />
+                    <div className="w-5 rounded-md bg-white/40 origin-bottom animate-bar-wave" style={{ height: '80px', animationDelay: '.72s' }} />
+                    <div className="w-5 rounded-md bg-white/35 origin-bottom animate-bar-wave" style={{ height: '60px', animationDelay: '.81s' }} />
+                    <div className="w-5 rounded-md bg-white/30 origin-bottom animate-bar-wave" style={{ height: '70px', animationDelay: '.90s' }} />
                   </div>
                 </div>
 

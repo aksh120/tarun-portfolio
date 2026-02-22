@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Data Modernization · Results Dashboard</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #09090b;
+      --s1: #111113;
+      --s2: #18181b;
+      --s3: #27272a;
+      --border: #2a2a2e;
+      --text: #fafafa;
+      --muted: #71717a;
+      --dim: #3f3f46;
+      --g: #22c55e;
+      --g2: #16a34a;
+      --g-bg: rgba(34, 197, 94, 0.08);
+      --g-border: rgba(34, 197, 94, 0.18);
+      --b: #3b82f6;
+      --b-bg: rgba(59, 130, 246, 0.08);
+      --b-border: rgba(59, 130, 246, 0.18);
+      --a: #f59e0b;
+      --a-bg: rgba(245, 158, 11, 0.08);
+      --a-border: rgba(245, 158, 11, 0.18);
+      --r: #ef4444;
+      --r-bg: rgba(239, 68, 68, 0.08);
+      --r-border: rgba(239, 68, 68, 0.18);
+      --p: #a78bfa;
+      --p-bg: rgba(167, 139, 250, 0.08);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: 'Familjen Grotesk', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      padding: 32px;
+      font-size: 107%;
+      background-image:
+        radial-gradient(ellipse 80% 40% at 50% -10%, rgba(34, 197, 94, 0.06) 0%, transparent 70%);
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .h-left h1 {
+      font-size: 23px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: var(--text);
+    }
+
+    .h-left p {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    .h-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .live {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--g-bg);
+      border: 1px solid var(--g-border);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--g);
+      letter-spacing: 1px;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--g);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0.3
+      }
+    }
+
+    .period-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      background: var(--s2);
+      border: 1px solid var(--border);
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+
+    /* ── GRID SYSTEM ── */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .grid-2-1 {
+      display: grid;
+      grid-template-columns: 1.8fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .grid-1-2 {
+      display: grid;
+      grid-template-columns: 1fr 1.8fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    /* ── CARD BASE ── */
+    .card {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── KPI CARD ── */
+    .kpi-val {
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -2px;
+      margin-bottom: 6px;
+    }
+
+    .kpi-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .kpi-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi-glow {
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity: 0.12;
+      pointer-events: none;
+    }
+
+    .c-g {
+      color: var(--g);
+    }
+
+    .c-b {
+      color: var(--b);
+    }
+
+    .c-a {
+      color: var(--a);
+    }
+
+    .c-r {
+      color: var(--r);
+    }
+
+    .c-p {
+      color: var(--p);
+    }
+
+    .bg-g {
+      background: var(--g-bg);
+      border: 1px solid var(--g-border);
+      color: var(--g);
+    }
+
+    .bg-b {
+      background: var(--b-bg);
+      border: 1px solid var(--b-border);
+      color: var(--b);
+    }
+
+    .bg-a {
+      background: var(--a-bg);
+      border: 1px solid var(--a-border);
+      color: var(--a);
+    }
+
+    .bg-r {
+      background: var(--r-bg);
+      border: 1px solid var(--r-border);
+      color: var(--r);
+    }
+
+    /* ── ANIMATED COUNTER ── */
+    .counter {
+      display: inline-block;
+    }
+
+    /* ── RADIAL PROGRESS ── */
+    .radial-wrap {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .radial-svg {
+      flex-shrink: 0;
+    }
+
+    .radial-center {
+      position: relative;
+      display: inline-block;
+    }
+
+    svg.ring circle {
+      transition: stroke-dashoffset 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ── BEFORE / AFTER BAR ── */
+    .ba-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .ba-row {}
+
+    .ba-head {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 7px;
+      align-items: baseline;
+    }
+
+    .ba-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .ba-nums {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .ba-track {
+      height: 10px;
+      background: var(--s3);
+      border-radius: 6px;
+      position: relative;
+      overflow: visible;
+    }
+
+    .ba-old {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      border-radius: 6px;
+      background: var(--dim);
+      opacity: 0.5;
+    }
+
+    .ba-new {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      border-radius: 6px;
+      width: 0;
+      transition: width 1.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .ba-label {
+      position: absolute;
+      right: -46px;
+      top: -4px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* ── PIPELINE STEPS ── */
+    .pipeline {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin-top: 4px;
+    }
+
+    .pipe-step {
+      flex: 1;
+      border-radius: 10px;
+      padding: 14px 12px;
+      position: relative;
+    }
+
+    .pipe-step+.pipe-step {
+      margin-left: 22px;
+    }
+
+    .pipe-step::after {
+      content: '›';
+      position: absolute;
+      right: -16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: var(--dim);
+      font-weight: 300;
+      line-height: 1;
+    }
+
+    .pipe-step:last-child::after {
+      display: none;
+    }
+
+    .pipe-icon {
+      font-size: 20px;
+      margin-bottom: 7px;
+    }
+
+    .pipe-step-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .pipe-step-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .pipe-step-detail {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── REGION BARS ── */
+    .region-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .rr {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .rr-flag {
+      font-size: 15px;
+      flex-shrink: 0;
+      width: 24px;
+      text-align: center;
+    }
+
+    .rr-name {
+      font-size: 13px;
+      font-weight: 500;
+      width: 105px;
+      flex-shrink: 0;
+    }
+
+    .rr-track {
+      flex: 1;
+      height: 6px;
+      background: var(--s3);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .rr-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--g);
+      width: 0;
+      transition: width 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .rr-pct {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--g);
+      width: 34px;
+      text-align: right;
+    }
+
+    /* ── OUTCOME LIST ── */
+    .outcome-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .outcome-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--s2);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .outcome-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .outcome-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .outcome-sub {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* ── DONUT ── */
+    .donut-container {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .donut-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      flex: 1;
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .legend-name {
+      font-size: 12px;
+      color: var(--muted);
+      flex: 1;
+    }
+
+    .legend-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* ── UPTIME ROW ── */
+    .uptime-blocks {
+      display: flex;
+      gap: 3px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .uptime-block {
+      width: 14px;
+      height: 28px;
+      border-radius: 3px;
+      background: var(--g);
+      opacity: 0;
+      animation: fillUp 0.05s ease forwards;
+    }
+
+    .uptime-block.miss {
+      background: var(--r);
+    }
+
+    /* ── STAT ROW ── */
+    .stat-row {
+      display: flex;
+      gap: 0;
+      margin-top: 4px;
+    }
+
+    .stat-item {
+      flex: 1;
+      text-align: center;
+      padding: 16px 8px;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat-item:last-child {
+      border-right: none;
+    }
+
+    .stat-num {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+
+    .stat-lbl {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 3px;
+    }
+
+    /* STAGGER ANIMATION */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.5s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="h-left">
+      <h1>Enterprise Data Modernization — Results</h1>
+      <p>Digital Infrastructure Initiative · Full-Year Performance Overview</p>
+    </div>
+    <div class="h-right">
+      <div class="period-tag">FY 2023 – 2024</div>
+      <div class="live">
+        <div class="live-dot"></div> Verified Outcomes
+      </div>
+    </div>
+  </header>
+
+  <!-- ROW 1: 4 Big KPIs -->
+  <div class="grid-4">
+
+    <div class="card fade-in" style="animation-delay:0.05s">
+      <div class="kpi-glow" style="background:var(--g)"></div>
+      <div class="card-label">Data Quality</div>
+      <div class="kpi-val c-g"><span class="counter" data-target="95">0</span>%</div>
+      <div class="kpi-desc">Duplicate records eliminated across all data systems</div>
+      <div class="kpi-badge bg-g">↓ From ~60% duplicates</div>
+    </div>
+
+    <div class="card fade-in" style="animation-delay:0.12s">
+      <div class="kpi-glow" style="background:var(--b)"></div>
+      <div class="card-label">Report Speed</div>
+      <div class="kpi-val c-b"><span class="counter" data-target="90">0</span>%</div>
+      <div class="kpi-desc">Faster — reports that took days now run in hours</div>
+      <div class="kpi-badge bg-b">Days → Hours</div>
+    </div>
+
+    <div class="card fade-in" style="animation-delay:0.19s">
+      <div class="kpi-glow" style="background:var(--a)"></div>
+      <div class="card-label">Manual Work Cut</div>
+      <div class="kpi-val c-a"><span class="counter" data-target="75">0</span>%</div>
+      <div class="kpi-desc">Less manual data entry, fixes and report assembly every week</div>
+      <div class="kpi-badge bg-a">↓ Hours saved weekly</div>
+    </div>
+
+    <div class="card fade-in" style="animation-delay:0.26s">
+      <div class="kpi-glow" style="background:var(--g)"></div>
+      <div class="card-label">System Uptime</div>
+      <div class="kpi-val c-g"><span class="counter" data-target="100">0</span>%</div>
+      <div class="kpi-desc">Zero system outages or security incidents post-launch</div>
+      <div class="kpi-badge bg-g">0 incidents logged</div>
+    </div>
+
+  </div>
+
+  <!-- ROW 2: Before/After + Donut -->
+  <div class="grid-2-1">
+
+    <!-- BEFORE / AFTER -->
+    <div class="card fade-in" style="animation-delay:0.3s">
+      <div class="card-label">Before vs. After — Key Metrics</div>
+      <div class="ba-rows" style="padding-right:56px">
+
+        <div class="ba-row">
+          <div class="ba-head">
+            <div class="ba-name">Data Accuracy</div>
+            <div class="ba-nums">40% → 95%</div>
+          </div>
+          <div class="ba-track">
+            <div class="ba-old" style="width:40%"></div>
+            <div class="ba-new" style="background:var(--g)" data-width="95">
+              <div class="ba-label c-g">+55 pts</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ba-row">
+          <div class="ba-head">
+            <div class="ba-name">Reporting Automation</div>
+            <div class="ba-nums">20% → 100%</div>
+          </div>
+          <div class="ba-track">
+            <div class="ba-old" style="width:20%"></div>
+            <div class="ba-new" style="background:var(--b)" data-width="100">
+              <div class="ba-label c-b">Full</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ba-row">
+          <div class="ba-head">
+            <div class="ba-name">API Reliability</div>
+            <div class="ba-nums">~65% → 100%</div>
+          </div>
+          <div class="ba-track">
+            <div class="ba-old" style="width:65%"></div>
+            <div class="ba-new" style="background:var(--g)" data-width="100">
+              <div class="ba-label c-g">100%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ba-row">
+          <div class="ba-head">
+            <div class="ba-name">Manual Effort (lower = better)</div>
+            <div class="ba-nums">100% → 25%</div>
+          </div>
+          <div class="ba-track">
+            <div class="ba-old" style="width:100%"></div>
+            <div class="ba-new" style="background:var(--r)" data-width="25">
+              <div class="ba-label c-r">−75%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ba-row">
+          <div class="ba-head">
+            <div class="ba-name">Time to Insight</div>
+            <div class="ba-nums">Days → Hours</div>
+          </div>
+          <div class="ba-track">
+            <div class="ba-old" style="width:100%"></div>
+            <div class="ba-new" style="background:var(--a)" data-width="10">
+              <div class="ba-label c-a">10×</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DONUT -->
+    <div class="card fade-in" style="animation-delay:0.36s">
+      <div class="card-label">Data Health Snapshot</div>
+      <div class="donut-container">
+        <div style="position:relative; flex-shrink:0;">
+          <svg width="130" height="130" viewBox="0 0 130 130" class="ring">
+            <circle cx="65" cy="65" r="50" fill="none" stroke="#27272a" stroke-width="16" />
+            <!-- Accurate: 95% = 0.95 * 314.16 = 298.45 -->
+            <circle cx="65" cy="65" r="50" fill="none" stroke="#22c55e" stroke-width="16" stroke-dasharray="298 16"
+              stroke-dashoffset="78.5" stroke-linecap="butt" opacity="0.95" />
+            <!-- Cleaning: 3% -->
+            <circle cx="65" cy="65" r="50" fill="none" stroke="#f59e0b" stroke-width="16" stroke-dasharray="9 305"
+              stroke-dashoffset="-220" stroke-linecap="butt" />
+            <!-- Duplicate: 2% -->
+            <circle cx="65" cy="65" r="50" fill="none" stroke="#ef4444" stroke-width="16" stroke-dasharray="6 308"
+              stroke-dashoffset="-229" stroke-linecap="butt" />
+          </svg>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
+            <div style="font-size:22px;font-weight:700;color:var(--g)">95%</div>
+            <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted)">CLEAN</div>
+          </div>
+        </div>
+        <div class="donut-legend">
+          <div class="legend-row">
+            <div class="legend-swatch" style="background:var(--g)"></div>
+            <div class="legend-name">Clean & Accurate</div>
+            <div class="legend-val c-g">95%</div>
+          </div>
+          <div class="legend-row">
+            <div class="legend-swatch" style="background:var(--a)"></div>
+            <div class="legend-name">In Validation</div>
+            <div class="legend-val c-a">3%</div>
+          </div>
+          <div class="legend-row">
+            <div class="legend-swatch" style="background:var(--r)"></div>
+            <div class="legend-name">Flagged / Review</div>
+            <div class="legend-val c-r">2%</div>
+          </div>
+          <div style="margin-top:8px;padding-top:10px;border-top:1px solid var(--border)">
+            <div
+              style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);margin-bottom:5px;letter-spacing:1px;text-transform:uppercase">
+              Before this project</div>
+            <div style="display:flex;gap:4px;align-items:center">
+              <div style="flex:1;height:5px;border-radius:3px;background:var(--r);opacity:0.5"></div>
+              <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--r)">~60% duplicates</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-row" style="margin-top:16px; border-top:1px solid var(--border)">
+        <div class="stat-item">
+          <div class="stat-num c-g">5</div>
+          <div class="stat-lbl">Data Sources</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num c-b">3</div>
+          <div class="stat-lbl">Core Tools</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num c-a">5</div>
+          <div class="stat-lbl">Regions</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 3: Pipeline + Regions -->
+  <div class="grid-2-1">
+
+    <!-- PIPELINE -->
+    <div class="card fade-in" style="animation-delay:0.4s">
+      <div class="card-label">How Data Flows — End to End</div>
+      <div class="pipeline">
+        <div class="pipe-step" style="background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.15)">
+          <div class="pipe-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+              fill="none" stroke="var(--b)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+            </svg></div>
+          <div class="pipe-step-label" style="color:var(--b)">Step 1</div>
+          <div class="pipe-step-title">Collect</div>
+          <div class="pipe-step-detail">Pull raw data from<br>5 different systems<br>+ API sources</div>
+        </div>
+        <div class="pipe-step" style="background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.15)">
+          <div class="pipe-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+              fill="none" stroke="var(--a)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+              </path>
+            </svg></div>
+          <div class="pipe-step-label" style="color:var(--a)">Step 2</div>
+          <div class="pipe-step-title">Clean</div>
+          <div class="pipe-step-detail">Remove duplicates<br>Fix formats<br>Validate records</div>
+        </div>
+        <div class="pipe-step" style="background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.15)">
+          <div class="pipe-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+              fill="none" stroke="var(--p)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg></div>
+          <div class="pipe-step-label" style="color:var(--p)">Step 3</div>
+          <div class="pipe-step-title">Govern</div>
+          <div class="pipe-step-detail">Store in one place<br>Enforce rules<br>Prevent bad data</div>
+        </div>
+        <div class="pipe-step" style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.15)">
+          <div class="pipe-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+              fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg></div>
+          <div class="pipe-step-label" style="color:var(--g)">Step 4</div>
+          <div class="pipe-step-title">Report</div>
+          <div class="pipe-step-detail">Auto-refreshing<br>dashboards for<br>leadership</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+        <div
+          style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;font-weight:500">
+          SAP MDG <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted)">Master Data</span>
+        </div>
+        <div
+          style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;font-weight:500">
+          Informatica Cloud <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted)">ETL</span>
+        </div>
+        <div
+          style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;font-weight:500">
+          Splunk <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted)">Security</span></div>
+      </div>
+    </div>
+
+    <!-- REGIONS -->
+    <div class="card fade-in" style="animation-delay:0.46s">
+      <div class="card-label">Rollout by Region</div>
+      <div class="region-rows">
+        <div class="rr">
+          <div class="rr-flag">🌎</div>
+          <div class="rr-name">Pan-America</div>
+          <div class="rr-track">
+            <div class="rr-fill" data-width="100"></div>
+          </div>
+          <div class="rr-pct">100%</div>
+        </div>
+        <div class="rr">
+          <div class="rr-flag">🌍</div>
+          <div class="rr-name">EMEA</div>
+          <div class="rr-track">
+            <div class="rr-fill" data-width="95"></div>
+          </div>
+          <div class="rr-pct">95%</div>
+        </div>
+        <div class="rr">
+          <div class="rr-flag">🇨🇳</div>
+          <div class="rr-name">China</div>
+          <div class="rr-track">
+            <div class="rr-fill" data-width="90"></div>
+          </div>
+          <div class="rr-pct">90%</div>
+        </div>
+        <div class="rr">
+          <div class="rr-flag">🇮🇳</div>
+          <div class="rr-name">India</div>
+          <div class="rr-track">
+            <div class="rr-fill" data-width="88"></div>
+          </div>
+          <div class="rr-pct">88%</div>
+        </div>
+        <div class="rr">
+          <div class="rr-flag">🇻🇳</div>
+          <div class="rr-name">Vietnam</div>
+          <div class="rr-track">
+            <div class="rr-fill" data-width="85"></div>
+          </div>
+          <div class="rr-pct">85%</div>
+        </div>
+      </div>
+
+      <div
+        style="margin-top:14px;padding:10px 12px;background:var(--g-bg);border:1px solid var(--g-border);border-radius:8px;">
+        <div
+          style="font-family:'DM Mono',monospace;font-size:8px;color:var(--g);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;">
+          Board Outcome</div>
+        <div style="font-size:11px;color:#a1a1aa;line-height:1.5">Formally reviewed and approved by global stakeholders.
+          Cleared for worldwide rollout.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 4: Uptime + Outcomes + Stats -->
+  <div class="grid-3">
+
+    <!-- UPTIME -->
+    <div class="card fade-in" style="animation-delay:0.5s">
+      <div class="card-label">API Uptime — 12 Months</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px">
+        <div style="font-size:36px;font-weight:700;color:var(--g);letter-spacing:-1.5px">100%</div>
+        <div style="font-size:12px;color:var(--muted)">uptime · 0 outages</div>
+      </div>
+      <div class="uptime-blocks" id="uptimeBlocks"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px">
+        <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted)">Jan 2023</div>
+        <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted)">Dec 2023</div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+        <div
+          style="display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:9px;color:var(--g)">
+          <div style="width:8px;height:8px;border-radius:2px;background:var(--g)"></div>Online
+        </div>
+        <div
+          style="display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:9px;color:var(--r)">
+          <div style="width:8px;height:8px;border-radius:2px;background:var(--r)"></div>0 incidents
+        </div>
+      </div>
+    </div>
+
+    <!-- BUSINESS OUTCOMES -->
+    <div class="card fade-in" style="animation-delay:0.56s">
+      <div class="card-label">Business Impact</div>
+      <div class="outcome-list">
+        <div class="outcome-item">
+          <div class="outcome-icon" style="background:var(--g-bg)"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+              height="16" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg></div>
+          <div>
+            <div class="outcome-title">Proactive Decisions</div>
+            <div class="outcome-sub">Teams shifted from fixing errors to catching them before they happen</div>
+          </div>
+        </div>
+        <div class="outcome-item">
+          <div class="outcome-icon" style="background:var(--b-bg)"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+              height="16" viewBox="0 0 24 24" fill="none" stroke="var(--b)" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg></div>
+          <div>
+            <div class="outcome-title">Faster Meetings</div>
+            <div class="outcome-sub">Review time cut — leadership walks in with answers, not questions</div>
+          </div>
+        </div>
+        <div class="outcome-item">
+          <div class="outcome-icon" style="background:var(--a-bg)"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+              height="16" viewBox="0 0 24 24" fill="none" stroke="var(--a)" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <path d="m9 12 2 2 4-4"></path>
+            </svg></div>
+          <div>
+            <div class="outcome-title">One Source of Truth</div>
+            <div class="outcome-sub">All teams use the same data — no more conflicting reports</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUMMARY NUMBERS -->
+    <div class="card fade-in" style="animation-delay:0.62s">
+      <div class="card-label">Project at a Glance</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;">
+        <div
+          style="background:var(--s2);border-radius:10px;padding:14px;text-align:center;border:1px solid var(--border)">
+          <div style="font-size:28px;font-weight:700;color:var(--g);letter-spacing:-1px">5</div>
+          <div
+            style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px">
+            Data Sources</div>
+        </div>
+        <div
+          style="background:var(--s2);border-radius:10px;padding:14px;text-align:center;border:1px solid var(--border)">
+          <div style="font-size:28px;font-weight:700;color:var(--b);letter-spacing:-1px">5</div>
+          <div
+            style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px">
+            Regions</div>
+        </div>
+        <div
+          style="background:var(--s2);border-radius:10px;padding:14px;text-align:center;border:1px solid var(--border)">
+          <div style="font-size:28px;font-weight:700;color:var(--a);letter-spacing:-1px">3</div>
+          <div
+            style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px">
+            Platforms</div>
+        </div>
+        <div
+          style="background:var(--g-bg);border-radius:10px;padding:14px;text-align:center;border:1px solid var(--g-border)">
+          <div style="font-size:28px;font-weight:700;color:var(--g);letter-spacing:-1px">✓</div>
+          <div
+            style="font-family:'DM Mono',monospace;font-size:8px;color:var(--g);text-transform:uppercase;letter-spacing:1px;margin-top:3px">
+            Global Approved</div>
+        </div>
+      </div>
+      <div
+        style="margin-top:12px;display:flex;gap:6px;align-items:center;padding:10px 12px;background:var(--s2);border-radius:8px;border:1px solid var(--border)">
+        <div style="display:flex;align-items:center;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+            viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg></div>
+        <div style="font-size:11px;color:var(--muted)">Zero security breaches across all API endpoints and data
+          pipelines — full audit period</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ── ANIMATED COUNTERS ──
+    document.querySelectorAll('.counter').forEach(el => {
+      const target = +el.dataset.target;
+      const duration = 1200;
+      const start = performance.now();
+      function tick(now) {
+        const p = Math.min((now - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(ease * target);
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      setTimeout(() => requestAnimationFrame(tick), 400);
+    });
+
+    // ── BEFORE/AFTER BARS ──
+    setTimeout(() => {
+      document.querySelectorAll('.ba-new').forEach(el => {
+        el.style.width = el.dataset.width + '%';
+      });
+    }, 300);
+
+    // ── REGION FILLS ──
+    setTimeout(() => {
+      document.querySelectorAll('.rr-fill').forEach(el => {
+        el.style.width = el.dataset.width + '%';
+      });
+    }, 500);
+
+    // ── UPTIME BLOCKS ──
+    const container = document.getElementById('uptimeBlocks');
+    for (let i = 0; i < 52; i++) {
+      const block = document.createElement('div');
+      block.className = 'uptime-block';
+      block.style.animationDelay = (i * 0.018 + 0.6) + 's';
+      block.style.animationDuration = '0.3s';
+      container.appendChild(block);
+    }
+  </script>
+</body>
+
+</html>
