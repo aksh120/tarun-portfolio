@@ -5,7 +5,7 @@ import MetricTile from '../components/ui/metric-tile';
 import GreetingRotator from '../components/ui/greeting-rotator';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Database, Cloud, BarChart3, LineChart, Cpu, Code2, Briefcase, GraduationCap, Building2, Sparkles, Mail, Phone, Linkedin, Github, ArrowUpRight } from 'lucide-react';
+import { Database, Cloud, BarChart3, LineChart, Cpu, Code2, Briefcase, GraduationCap, Building2, Sparkles, Mail, Linkedin, Github, ArrowUpRight } from 'lucide-react';
 import Projects from '../components/Projects';
 
 export default function HomePage() {
@@ -397,7 +397,6 @@ function CTA() {
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
             {[
               { icon: Mail, label: 'Email', value: 'tarunasrani.work@gmail.com', href: 'mailto:tarunasrani.work@gmail.com' },
-              { icon: Phone, label: 'Phone', value: '+1 (919) 579-2639', href: 'tel:+19195792639' },
               { icon: Linkedin, label: 'LinkedIn', value: '/in/tarunasrani', href: 'https://linkedin.com/in/tarunasrani' },
               { icon: Github, label: 'GitHub', value: '/TarunAsrani', href: 'https://github.com/TarunAsrani' },
             ].map((contact, idx) => (
