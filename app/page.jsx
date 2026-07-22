@@ -403,7 +403,7 @@ function CTA() {
               <Reveal key={contact.label} delay={0.3 + idx * 0.1}>
                 <a
                   href={contact.href}
-                  className="group relative block rounded-2xl border border-slate-200/60 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-emerald-300/40 dark:border-white/10 dark:bg-slate-800/50 dark:hover:bg-slate-800/70 dark:hover:border-teal-400/30"
+                  className="group relative block rounded-3xl border border-slate-200/60 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-emerald-300/40 dark:border-white/10 dark:bg-slate-800/50 dark:hover:bg-slate-800/70 dark:hover:border-teal-400/30"
                 >
                   <div className="flex items-center gap-4">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 transition-colors duration-300 group-hover:bg-emerald-200 dark:bg-teal-900/30 dark:text-teal-300 dark:group-hover:bg-teal-900/50">
